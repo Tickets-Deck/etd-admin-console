@@ -8,7 +8,7 @@ interface PaymentsProps {
 const Payments: FunctionComponent<PaymentsProps> = (): ReactElement => {
     return (
         <main className={styles.mainPageStyle}>
-            Payments
+            Payments 
         </main>
     );
 }
