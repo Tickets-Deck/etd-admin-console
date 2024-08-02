@@ -37,7 +37,7 @@ const Navbar: FunctionComponent<NavbarProps> = ({ session }): ReactElement => {
                         {/* <CustomImage src={images.avatar} alt="User" /> */}
                         <Icons.User className="w-5 h-5" />
                     </span>
-                    <p className="font-medium text-sm">Admin EO.</p>
+                    <p className="font-medium text-sm text-dark-grey">Admin EO.</p>
                     <span><Icons.Dropdown /></span>
                 </Link>
             </div>
