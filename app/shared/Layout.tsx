@@ -1,7 +1,10 @@
+"use client"
 import NextTopLoader from "nextjs-toploader";
-import React, { FunctionComponent, ReactElement, ReactNode } from "react";
+import React, { FunctionComponent, ReactElement, ReactNode, useEffect } from "react";
 import Navbar from "./Navbar";
 import { Session } from "next-auth";
+import { useRouter, usePathname } from "next/navigation";
+import { ApplicationRoutes } from "../constants/applicationRoutes";
 
 interface LayoutProps {
     children?: ReactNode;
@@ -9,6 +12,16 @@ interface LayoutProps {
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactElement => {
+
+    const { push } = useRouter();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        if (!session) {
+            push(ApplicationRoutes.SignIn);
+        }
+    }, [session])
+
     return (
         <>
             <NextTopLoader
@@ -22,9 +35,12 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                 speed={200}
                 shadow="0 0 10px #f1fa9e,0 0 5px #ceb0fa"
             />
-            <Navbar
-                session={session}
-            />
+            {
+                pathname !== ApplicationRoutes.SignIn &&
+                <Navbar
+                    session={session}
+                />
+            }
             {children}
         </>
     );
