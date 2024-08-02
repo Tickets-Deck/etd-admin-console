@@ -114,7 +114,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     }
 
     useEffect(() => {
-        if (status === "authenticated") {
+        if (status === "authenticated" && session) {
             // Refresh the page so we get the new session state to the server side
             router.refresh();
             // Fetch user information
