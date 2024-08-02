@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Check if user exists in database checking each user's email if it matches the email provided
-        const user = await prisma.users.findUnique({
+        const user = await prisma.adminUsers.findUnique({
           where: {
             email: credentials.email,
           },
@@ -81,14 +81,14 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  secret: process.env.SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ account, profile }) {
       // console.log("Sign In Callback", { account, profile });
 
       if (account?.provider === "google") {
         // Check if user exists in database checking each user's email if it matches the email provided
-        const user = await prisma.users.findUnique({
+        const user = await prisma.adminUsers.findUnique({
           where: {
             email: profile?.email,
           },
@@ -97,7 +97,7 @@ export const authOptions: NextAuthOptions = {
         // If user exists, return true to allow sign in
         if (user) {
           // Update emailVerified to true
-          await prisma.users.update({
+          await prisma.adminUsers.update({
             where: {
               id: user.id,
             },
@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // If user does not exist, create user
-        await prisma.users.create({
+        await prisma.adminUsers.create({
           data: {
             email: profile?.email as string,
             firstName: profile?.name?.split(" ")[0] as string,
@@ -143,7 +143,7 @@ export const authOptions: NextAuthOptions = {
       // console.log("JWT Callback", { token, user, trigger, session });
 
       // Check prisma for user with email gotten in token
-      const exisitingUser = await prisma.users.findUnique({
+      const exisitingUser = await prisma.adminUsers.findUnique({
         where: {
           email: token.email as string,
         },
@@ -178,15 +178,15 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage sessions here
     session: async ({ session, token }) => {
-      // console.log("Session Callback", { session, token });
+    //   console.log("Session Callback", { session, token });
 
       // Fetch user details from database
-      const user = await prisma.users.findUnique({
+      const user = await prisma.adminUsers.findUnique({
         where: {
           id: token.id as string,
         },
       });
-      // console.log("🚀 ~ session: ~ user:", user);
+    //   console.log("🚀 ~ session: ~ user:", user);
 
       return {
         ...session,
