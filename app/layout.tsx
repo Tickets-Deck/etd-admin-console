@@ -4,6 +4,7 @@ import "./globals.scss";
 import Layout from "./shared/Layout";
 import { getServerSession } from "next-auth";
 import { authOptions } from '@/auth';
+import GlobalProvider from "./components/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,10 +24,12 @@ export default async function RootLayout({
     return (
         <html lang="en">
             <body className="bg-white">
-                <Layout
-                    children={children}
-                    session={session}
-                />
+                <GlobalProvider>
+                    <Layout
+                        children={children}
+                        session={session}
+                    />
+                </GlobalProvider>
             </body>
         </html>
     );
