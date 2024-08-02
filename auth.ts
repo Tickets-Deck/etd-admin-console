@@ -1,11 +1,11 @@
 import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "./lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
 // import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
 import { ApplicationRoutes } from "./app/constants/applicationRoutes";
 import { StorageKeys } from "./app/constants/storageKeys";
+import { prisma } from "./lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   session: {
