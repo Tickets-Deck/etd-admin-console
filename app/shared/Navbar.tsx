@@ -15,6 +15,9 @@ interface NavbarProps {
 
 const Navbar: FunctionComponent<NavbarProps> = ({ session }): ReactElement => {
     const [navbarIsVisible, setNavbarIsVisible] = React.useState(false);
+    const user = session?.user;
+    // console.log("🚀 ~ user:", user)
+
     return (
         <motion.nav
             initial="closed"
@@ -37,8 +40,8 @@ const Navbar: FunctionComponent<NavbarProps> = ({ session }): ReactElement => {
                         {/* <CustomImage src={images.avatar} alt="User" /> */}
                         <Icons.User className="w-5 h-5" />
                     </span>
-                    <p className="font-medium text-sm text-dark-grey">Admin EO.</p>
-                    <span><Icons.Dropdown /></span>
+                    <p className="font-medium text-sm text-dark-grey">{user?.username ?? user?.name}</p>
+                    {/* <span><Icons.Dropdown /></span> */}
                 </Link>
             </div>
 
