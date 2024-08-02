@@ -28,7 +28,7 @@ export default function Home() {
 
     return (
         <main className="bg-light-grey flex min-h-screen flex-col items-center justify-between p-4 pt-[calc(136px_+_24px)]">
-            <div className="w-full flex flex-col gap-4 mb-8">
+            <div className="w-full flex flex-col gap-4 mb-8 md:flex-row">
                 {
                     kpis.map((kpi, index) => {
                         const priceKpi = kpi.title == "Total Payments";
