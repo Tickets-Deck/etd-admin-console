@@ -8,6 +8,7 @@ import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { StorageKeys } from "@/app/constants/storageKeys";
 import { EmailIcon, EyeIcon, PasswordIcon } from "../SVGs/SVGicons";
+import { useOnline } from "@/app/hooks/useOnline";
 
 interface LoginProps {
 
@@ -15,6 +16,7 @@ interface LoginProps {
 
 const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
+    const isUserOnline = useOnline();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const router = useRouter();
@@ -37,23 +39,17 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         }
     };
 
-    // async function handleFetchUserInformation() {
-    //     await fetchUserInformation(session?.user.id as string)
-    //         .then((response) => {
-    //             // Save to redux
-    //             dispatch(updateUserCredentials(response.data));
-    //         })
-    //         .catch((error) => {
-    //             // console.log(error);
-    //             catchError(error);
-    //         })
-    // };
-
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
         // Prevent default form submission
         e.preventDefault();
 
+        // if user is login
+        if(!isUserOnline) {
+            setMessage("It appears that you are offline. Please check your network connectivity, and try again.")
+            return;
+        }
+        
         // Unset message
         setMessage('');
 
@@ -80,7 +76,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             email,
             password,
             redirect: false,
-        }
+        };
 
         // console.log(userInformation);
 
