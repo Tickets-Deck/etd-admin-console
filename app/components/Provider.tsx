@@ -1,13 +1,7 @@
 "use client"
 import React from 'react';
 import { SessionProvider } from 'next-auth/react';
-
-// const store = configureStore({
-//     reducer: {
-//         userCredentials: userReducer,
-//         theme: themeReducer,
-//     },
-// });
+import { AppProvider } from '../contexts/ApplicationContext';
 
 type Props = {
     children?: React.ReactNode
@@ -16,7 +10,9 @@ type Props = {
 const GlobalProvider = ({ children }: Props) => {
     return (
         <SessionProvider>
-            {children}
+            <AppProvider>
+                {children}
+            </AppProvider>
         </SessionProvider>
     );
 };
