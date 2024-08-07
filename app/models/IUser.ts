@@ -1,7 +1,3 @@
-import { Bookmarks } from "./IBookmark";
-import { Favourites } from "./IFavourites";
-import { TicketPurchased } from "./ITicket";
-
 export type UserCredentialsRequest = {
   email: string;
   password: string;
@@ -38,8 +34,8 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   ticketsSold: number;
   totalRevenue: number;
 
-  bookmarks: Bookmarks[];
-  favorites: Favourites[];
+  //   bookmarks: Bookmarks[];
+  //   favorites: Favourites[];
 
   emailVerified: boolean;
   isVerified: boolean;
@@ -50,7 +46,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   isSubscribed: boolean;
   isNewsletterSubscribed: boolean;
 
-  ticketsPurchased: TicketPurchased[];
+  //   ticketsPurchased: TicketPurchased[];
 };
 
 export type ProfilePhotoRequest = {
