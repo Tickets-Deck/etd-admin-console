@@ -190,6 +190,74 @@ export class ApplicationError extends BaseApplicationError {
   };
 
   //#endregion
+  
+  //#region AdminUser Errors
+
+  /**
+   * The error message for ~ AdminUser with specified AdminUser ID not found
+   */
+  static AdminUserWithIdNotFound: IApplicationError = {
+    Text: "AdminUser with specified AdminUser ID not found",
+    Code: "ADMINUSER_1000",
+  };
+
+  /**
+   * The error message for ~ AdminUser with specified username not found
+   */
+  static AdminUserWithUsernameNotFound: IApplicationError = {
+    Text: "AdminUser with specified username not found",
+    Code: "ADMINUSER_1001",
+  };
+
+  /**
+   * The error message for ~ AdminUser with specified token not found
+   */
+  static AdminUserWithTokenNotFound: IApplicationError = {
+    Text: "AdminUser with specified token not found",
+    Code: "ADMINUSER_1002",
+  };
+
+  /**
+   * The error message for ~ AdminUser with specified email not found
+   */
+  static AdminUserWithEmailNotFound: IApplicationError = {
+    Text: "AdminUser with specified email not found",
+    Code: "ADMINUSER_1003",
+  };
+
+  /**
+   * The error message for ~ AdminUser already exists
+   */
+  static AdminUserAlreadyExists: IApplicationError = {
+    Text: "AdminUser already exists",
+    Code: "ADMINUSER_1004",
+  };
+
+  /**
+   * The error message for ~ AdminUser ID is required
+   */
+  static AdminUserIdIsRequired: IApplicationError = {
+    Text: "AdminUser ID is required",
+    Code: "ADMINUSER_1005",
+  };
+
+  /**
+   * The error message for ~ AdminUser with specified email already exists
+   */
+  static AdminUserWithEmailAlreadyExists: IApplicationError = {
+    Text: "AdminUser with specified email already exists",
+    Code: "ADMINUSER_1006",
+  };
+
+  /**
+   * The error message for ~ AdminUsername is required
+   */
+  static AdminUsernameIsRequired: IApplicationError = {
+    Text: "AdminUsername is required",
+    Code: "ADMINUSER_1007",
+  };
+
+  //#endregion
 
   //#region Email Errors
 
