@@ -12,3 +12,19 @@ export function useCreateNewsletterSubscriber() {
 
   return createNewsletterSubscriber;
 }
+
+export function useFetchDashboardInfo() {
+  async function fetchDashboardInfo(userId: string) {
+    return API.get(`${ApiRoutes.FetchDashboardKpis}?userId=${userId}`);
+  }
+
+  return fetchDashboardInfo;
+}
+
+export function useFetchRecentTransactions() {
+  async function fetchRecentTransactions(userId: string) {
+    return API.get(`${ApiRoutes.FetchRecentTransactions}?userId=${userId}`);
+  }
+
+  return fetchRecentTransactions;
+}

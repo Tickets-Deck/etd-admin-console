@@ -59,9 +59,14 @@ export class ApiRoutes {
   static Tickets: string = "api/events/tickets";
 
   /**
-   * The route to Dashboard endpoint
+   * The route to Fetch dashboard KPIs endpoint
    */
-  static Dashboard: string = "api/dashboard";
+  static FetchDashboardKpis: string = "api/dashboard";
+
+  /**
+   * The route to Fetch recent trasactions endpoint
+   */
+  static FetchRecentTransactions: string = "api/dashboard/recent-transactions";
 
   /**
    * The route to Customer Enquiries endpoint
