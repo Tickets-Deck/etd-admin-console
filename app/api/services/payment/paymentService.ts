@@ -1,15 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import Paystack from "paystack";
-import {
-  OrderStatus,
-  PaymentServiceProvider,
-  PaymentStatus,
-} from "@prisma/client";
-import { NextRequest } from "next/server";
-import { ApplicationError } from "@/app/constants/applicationError";
-import { StatusCodes } from "@/app/models/IStatusCodes";
-import { generatePaymentReference } from "@/app/constants/idgenerator";
-import { processEmailNotification } from "../notification/emailNotification";
 
 // Function to handle successful payment result
 // export async function handleSuccessfulPayment(
