@@ -19,7 +19,6 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     const { push } = useRouter();
     const pathname = usePathname();
     const { offlineStatusModalVisibility, hideOfflineStatusModalVisibility } = useContext(ApplicationContext) as ApplicationContextData;
-    console.log("🚀 ~ offlineStatusModalVisibility:", offlineStatusModalVisibility)
 
     useEffect(() => {
         if (!session) {
