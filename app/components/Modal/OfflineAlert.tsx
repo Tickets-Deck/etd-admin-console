@@ -10,11 +10,12 @@ interface OfflineAlertProps {
 }
 
 const OfflineAlert: FunctionComponent<OfflineAlertProps> = ({ visibility, setVisibility }): ReactElement => {
-    console.log("🚀 ~ visibility:", visibility)
+    
     return (
         <ModalWrapper
             visibility={visibility}
             setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}
+            disallowOverlayFunction
             disallowRemovalTrigger>
             <div className="w-[20rem] max-w-[20rem] p-6 rounded-2xl bg-container-grey">
                 <div className="flex flex-row items-start justify-between mb-2">
