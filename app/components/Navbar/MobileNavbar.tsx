@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { Icons } from "../ui/icons";
+import { signOut } from 'next-auth/react';
 
 interface MobileNavbarOverlayProps {
     navbarIsVisible: boolean;
@@ -56,6 +57,16 @@ const MobileNavbarOverlay: FunctionComponent<MobileNavbarOverlayProps> = ({ navb
                         </Link>
                     ))
                 }
+                <button
+                    className="text-black p-2 rounded-lg focus:bg-light-grey w-fit"
+                    onClick={() => {
+                        signOut();
+                        setNavbarIsVisible(false);
+                    }}>
+                    <motion.span variants={liVariant}>
+                        Logout
+                    </motion.span>
+                </button>
             </motion.div>
         </motion.div>
     );

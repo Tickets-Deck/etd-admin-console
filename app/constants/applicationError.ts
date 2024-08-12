@@ -29,6 +29,14 @@ export class BaseApplicationError {
     Text: "Missing Required Parameters",
     Code: `${StatusCodes.BadRequest}`,
   };
+
+  /**
+   * The error message for ~ Not Authorized
+   */
+  static Unauthorized: IApplicationError = {
+    Text: "Not Authorized",
+    Code: `${StatusCodes.Unauthorized}`,
+  };
 }
 
 /**

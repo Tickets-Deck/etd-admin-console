@@ -5,14 +5,6 @@ export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_TEST,
 });
 
-export function useCreateNewsletterSubscriber() {
-  async function createNewsletterSubscriber(email: string) {
-    return API.post(ApiRoutes.CreateNewsletterSubscriber, { email });
-  }
-
-  return createNewsletterSubscriber;
-}
-
 export function useFetchDashboardInfo() {
   async function fetchDashboardInfo(userId: string) {
     return API.get(`${ApiRoutes.FetchDashboardKpis}?userId=${userId}`);
@@ -27,4 +19,12 @@ export function useFetchRecentTransactions() {
   }
 
   return fetchRecentTransactions;
+}
+
+export function useFetchPayments() {
+  async function fetchPayments(userId: string) {
+    return API.get(`${ApiRoutes.Payments}?userId=${userId}`);
+  }
+
+  return fetchPayments;
 }

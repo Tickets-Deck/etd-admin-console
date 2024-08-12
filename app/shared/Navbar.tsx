@@ -1,6 +1,7 @@
 "use client"
 import { Session } from "next-auth";
-import React, { ReactElement, FunctionComponent } from "react";
+import { useSession } from "next-auth/react";
+import React, { ReactElement, FunctionComponent, useState, useEffect } from "react";
 import { Icons } from "../components/ui/icons";
 import CustomImage from "../components/ui/image";
 import images from "@/public/images";
@@ -13,10 +14,15 @@ interface NavbarProps {
     session: Session | null
 }
 
-const Navbar: FunctionComponent<NavbarProps> = ({ session }): ReactElement => {
+const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
     const [navbarIsVisible, setNavbarIsVisible] = React.useState(false);
-    const user = session?.user;
-    // console.log("🚀 ~ user:", user)
+    const [userInfo, setUserInfo] = useState<Session>();
+    const { status, data: session } = useSession();
+
+    useEffect(() => {
+        if (!session) return;
+        setUserInfo(session);
+    }, [session, status])
 
     return (
         <motion.nav
@@ -40,7 +46,7 @@ const Navbar: FunctionComponent<NavbarProps> = ({ session }): ReactElement => {
                         {/* <CustomImage src={images.avatar} alt="User" /> */}
                         <Icons.User className="w-5 h-5" />
                     </span>
-                    <p className="font-medium text-sm text-dark-grey">{user?.username ?? user?.name}</p>
+                    <p className="font-medium text-sm text-dark-grey">{userInfo?.user.username ?? userInfo?.user.name}</p>
                     {/* <span><Icons.Dropdown /></span> */}
                 </Link>
             </div>

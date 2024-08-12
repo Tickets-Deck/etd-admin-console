@@ -22,7 +22,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     const router = useRouter();
     const { data: session, status } = useSession();
 
-    const [email, setEmail] = useState(retrieveNewlyCreatedUserEmail() ?? '');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,14 +30,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     const [passwordErrorMsg, setPasswordErrorMsg] = useState(false);
 
     const [message, setMessage] = useState('');
-
-    function retrieveNewlyCreatedUserEmail() {
-        const newlyCreatedUserEmail = sessionStorage.getItem(StorageKeys.NewlyCreatedUserEmail);
-
-        if (newlyCreatedUserEmail && newlyCreatedUserEmail !== "" && newlyCreatedUserEmail !== null) {
-            return newlyCreatedUserEmail;
-        }
-    };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
@@ -121,12 +113,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             router.push(ApplicationRoutes.Home);
         }
     }, [status]);
-
-    // useEffect(() => {
-    //     if (retrieveNewlyCreatedUserEmail()) {
-    //         setEmail(retrieveNewlyCreatedUserEmail() as string);
-    //     }
-    // }, [retrieveNewlyCreatedUserEmail()])
 
     return (
         <div className="min-h-[100vh] p-5 pt-20 pb-20 grid place-items-center bg-gray-800 md:(py-12 flex)">
