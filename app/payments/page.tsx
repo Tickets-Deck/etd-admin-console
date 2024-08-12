@@ -1,5 +1,5 @@
 import { FunctionComponent, ReactElement } from "react";
-import { styles } from "../styles/styles";
+import PaymentPage from "./PaymentPage";
 
 interface PaymentsProps {
 
@@ -7,9 +7,7 @@ interface PaymentsProps {
 
 const Payments: FunctionComponent<PaymentsProps> = (): ReactElement => {
     return (
-        <main className={styles.mainPageStyle}>
-            Payments 
-        </main>
+        <PaymentPage />
     );
 }
 
