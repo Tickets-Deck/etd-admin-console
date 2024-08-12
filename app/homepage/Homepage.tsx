@@ -18,6 +18,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
 
     const fetchDashboardInfo = useFetchDashboardInfo();
     const fetchRecentTransactions = useFetchRecentTransactions();
+    
     const { data: session, status } = useSession();
     const user = session?.user;
 
@@ -86,7 +87,9 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
             <div className="w-full flex flex-col gap-4 bg-white p-5 rounded-2xl">
                 <div className="flex flex-col items-start md:flex-row md:justify-between">
                     <h3 className="text-xl font-medium">Recent Transactions</h3>
-                    <Link href="/" className="font-normal text-dark-grey/50 md:p-2 md:px-4 md:rounded-full md:bg-dark-grey md:text-white">See all</Link>
+                    <Link href={ApplicationRoutes.Payments} className="font-normal text-dark-grey/50 md:p-2 md:px-4 md:rounded-full md:bg-dark-grey md:text-white">
+                        See all
+                    </Link>
                 </div>
                 <ul className="mb-5">
                     {
@@ -109,8 +112,8 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
                                         <span className="font-semibold text-xl text-dark-grey font-MonaSansWide">
                                             {
                                                 Number(transaction.totalPrice) > 0 ?
-                                                <>&#8358;{Number(transaction.totalPrice).toLocaleString()}</> :
-                                                <>Free</>
+                                                    <>&#8358;{Number(transaction.totalPrice).toLocaleString()}</> :
+                                                    <>Free</>
                                             }
                                         </span>
                                         <Link href="/" className="p-2 px-5 bg-gray-100 text-dark-grey/80 text-sm rounded-full hover:opacity-55">View transaction</Link>
