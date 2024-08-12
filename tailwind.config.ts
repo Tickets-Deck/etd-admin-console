@@ -17,7 +17,10 @@ const config: Config = {
         "primary-sub": "#CEB0FA",
         "light-grey": "#F2F2F2",
         "dark-grey": "#111111",
-        "container-grey": "#313131"
+        "container-grey": "#313131",
+        "success": "#00c940",
+        "failed": "#dc143c",
+        "warning": "#DA8302",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
