@@ -2,7 +2,7 @@ import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL_LIVE,
 });
 
 export function useFetchDashboardInfo() {
