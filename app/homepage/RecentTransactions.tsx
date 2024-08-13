@@ -4,10 +4,10 @@ import { ApplicationRoutes } from '../constants/applicationRoutes';
 import { Icons } from '../components/ui/icons';
 import moment from 'moment';
 import Button from '../components/ui/button';
-import { RecentTransactions } from '../models/IRecentTransactions';
+import { IRecentTransactions } from '../models/IRecentTransactions';
 
 type Props = {
-    recentTransactions: RecentTransactions[]
+    recentTransactions: IRecentTransactions[]
 }
 
 const RecentTransactions = ({ recentTransactions }: Props) => {
