@@ -32,4 +32,9 @@ export class ApiRoutes {
    * The route to Payments endpoint
    */
   static Payments: string = "api/payments";
+
+  /**
+   * The route to Users endpoint
+   */
+  static Users: string = "api/users";
 }
