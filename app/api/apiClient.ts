@@ -2,7 +2,7 @@ import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useFetchDashboardInfo() {
@@ -27,4 +27,12 @@ export function useFetchPayments() {
   }
 
   return fetchPayments;
+}
+
+export function useFetchUsers() {
+  async function fetchUsers(userId: string) {
+    return API.get(`${ApiRoutes.Users}?userId=${userId}`);
+  }
+
+  return fetchUsers;
 }
