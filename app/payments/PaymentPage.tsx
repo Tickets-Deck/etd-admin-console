@@ -61,7 +61,7 @@ const PaymentPage = (props: Props) => {
         <main className={styles.mainPageStyle}>
             <div className="w-full flex flex-col gap-4 bg-transparent p-0">
                 <div className="flex flex-col items-start md:flex-row md:justify-between">
-                    <h3 className="text-2xl font-medium">Payments</h3>
+                    <h3 className="text-2xl text-dark-grey font-medium">Payments</h3>
                     {/* <Link href={ApplicationRoutes.Payments} className="font-normal text-dark-grey/50 md:p-2 md:px-4 md:rounded-full md:bg-dark-grey md:text-white">
                         See all
                     </Link> */}
