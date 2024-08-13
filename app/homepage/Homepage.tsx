@@ -6,8 +6,9 @@ import { ApplicationRoutes } from "../constants/applicationRoutes";
 import { useFetchDashboardInfo, useFetchRecentTransactions } from "../api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "../constants/catchError";
-import RecentTransactions from "./RecentTransactions";
 import Kpi from "./Kpi";
+import RecentTransactions from "./RecentTransactions";
+import { IRecentTransactions } from "../models/IRecentTransactions";
 
 type HomepageProps = {
 }
@@ -22,7 +23,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [dashboardInfo, setDashboardInfo] = useState<DashboardInfoResponse>();
-    const [recentTransactions, setRecentTransactions] = useState<RecentTransactions[]>([]);
+    const [recentTransactions, setRecentTransactions] = useState<IRecentTransactions[]>([]);
 
     async function handleFetchDashboardInfo() {
 
