@@ -1,7 +1,7 @@
 import { OrderStatus } from "../enums/IOrderStatus";
 import { PaymentStatus } from "../enums/IPaymentStatus";
 
-export type RecentTransactions = {
+export type IRecentTransactions = {
   contactEmail: string;
   createdAt: string;
   eventId: string;
