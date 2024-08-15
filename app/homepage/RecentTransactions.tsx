@@ -30,7 +30,7 @@ const RecentTransactions = ({ recentTransactions }: Props) => {
                                         <Icons.Credit className="w-8 h-8 stroke-dark-grey" />
                                     </span>
                                     <div className="flex flex-col">
-                                        <h4 className="font-normal text-base text-dark-grey leading-6">{`${transaction.contactEmail} ordered ${transaction.quantity} ${transaction.quantity > 1 ? "tickets" : "ticket"}`}</h4>
+                                        <h4 className="font-normal text-base text-dark-grey leading-6 break-words">{`${transaction.contactEmail} ordered ${transaction.quantity} ${transaction.quantity > 1 ? "tickets" : "ticket"}`}</h4>
                                         <div className="flex flex-row items-center gap-2">
                                             <p className="text-sm text-dark-grey/50">{moment(transaction.createdAt).format("MMM D, YYYY")}</p>
                                             <span className="text-dark-grey">|</span>
