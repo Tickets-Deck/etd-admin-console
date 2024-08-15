@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import ComponentLoader from '../Loader/ComponentLoader';
+import { ComponentLoader } from '../Loader/ComponentLoader';
 
 type Props = {
     tableHeaders: ReactElement[];
