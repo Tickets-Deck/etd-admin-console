@@ -67,13 +67,13 @@ const PaymentPage = (props: Props) => {
                     </Link> */}
                 </div>
 
-                <div className='rounded-2xl overflow-hidden'>
+                <div className='rounded-2xl overflow-x-auto'>
                     <Table
                         tableHeaderStyle="text-white"
                         tableHeaders={[
                             <div className="flex items-center">
                                 {/* <input type="checkbox" className="custom-checkbox" /> */}
-                                <span className="ml-2">Id</span>
+                                <span className="ml-2">Contact Email</span>
                             </div>,
                             <>Event name</>,
                             <>Amount</>,
@@ -87,7 +87,7 @@ const PaymentPage = (props: Props) => {
                             payments.map((payment, index) => [
                                 <div className="flex items-center text-[#666666]">
                                     {/* <input type="checkbox" className="border border-mcNiff-primary" /> */}
-                                    <span className="ml-2 text-sm w-48 text-wrap">{payment.id}</span>
+                                    <span className="ml-2 text-sm w-48 text-wrap">{payment.ticketOrder.contactEmail}</span>
                                 </div>,
                                 <span className="text-[#666666] text-left">{payment.ticketOrder.event.title}</span>,
                                 <span className="text-[#666666]">&#8358;{Number(payment.amount).toLocaleString()}</span>,
