@@ -3,12 +3,12 @@ import { ReactElement, FunctionComponent, useState, useEffect, FormEvent } from 
 import { signIn, useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { redirect, useRouter } from "next/navigation";
-import ComponentLoader from "../Loader/ComponentLoader";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { StorageKeys } from "@/app/constants/storageKeys";
 import { EmailIcon, EyeIcon, PasswordIcon } from "../SVGs/SVGicons";
 import { useOnline } from "@/app/hooks/useOnline";
+import { ButtonLoader, ComponentLoader } from "../Loader/ComponentLoader";
 
 interface LoginProps {
 
@@ -117,7 +117,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     return (
         <div className="min-h-[100vh] p-5 pt-20 pb-20 grid place-items-center bg-gray-800 md:(py-12 flex)">
             {/* <div className="bg-gray-700 text-white rounded-2xl flex w-full max-w-[500px] h-fit overflow-hidden sm:(w-[70vw] mx-auto) md:(max-w-[500px]) lg:(w-[35vw])"> */}
-            <div className="p-6 w-full flex flex-col gap-6 bg-gray-700 text-white rounded-2xl">
+            <div className="p-6 w-full flex flex-col gap-6 bg-gray-700 text-white rounded-2xl sm:w-1/2 sm:max-w-[400px] md:min-w-[400px]">
                 <div className="flex flex-col items-center gap-1 mb-2">
                     <h3 className="font-semibold">Welcome</h3>
                     <p className="text-lg text-center">Log into your account</p>
@@ -190,7 +190,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                         type="submit"
                         disabled={isLoading}>
                         Log in
-                        {isLoading && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
+                        {isLoading && <ButtonLoader />}
                     </button>
                 </form>
             </div>
