@@ -40,7 +40,7 @@ const RecentTransactions = ({ recentTransactions }: Props) => {
                                 </div>
                                 <div className="flex flex-row items-center justify-between">
                                     <div className='flex flex-col md:flex-row md:items-center md:gap-3'>
-                                        <p className='max-w-[220px] md:max-w-none overflow-hidden whitespace-nowrap text-ellipsis'>Event: {transaction.event.title}</p>
+                                        <p className='max-w-[220px] md:max-w-none overflow-hidden whitespace-nowrap text-ellipsis text-dark-grey'>Event: {transaction.event.title}</p>
                                         <span className="font-semibold text-xl text-dark-grey font-MonaSansWide">
                                             {
                                                 Number(transaction.totalPrice) > 0 ?
