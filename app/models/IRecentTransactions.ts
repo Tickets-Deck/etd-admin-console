@@ -1,6 +1,10 @@
 import { OrderStatus } from "../enums/IOrderStatus";
 import { PaymentStatus } from "../enums/IPaymentStatus";
 
+type IRecentTransactionEvent = {
+    title: string;
+}
+
 export type IRecentTransactions = {
   contactEmail: string;
   createdAt: string;
@@ -14,4 +18,5 @@ export type IRecentTransactions = {
   totalPrice: string;
   updatedAt: string;
   userId: string | null;
+  event: IRecentTransactionEvent
 };
