@@ -1,5 +1,5 @@
 import * as React from "react"
-import ComponentLoader from "../Loader/ComponentLoader";
+import { ButtonLoader } from "../Loader/ComponentLoader";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     btnIcon?: React.ReactElement;
@@ -16,7 +16,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
             >
                 {btnIcon && <span>{btnIcon}</span>}
-                {props.disabled && <ComponentLoader lightTheme isSmallLoader customBackground="#E86708" customLoaderColor="#0000" />}
+                {props.disabled && <ButtonLoader />}
                 {props.children}
             </button>
         );
