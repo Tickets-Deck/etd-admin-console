@@ -1,8 +1,6 @@
 import { ApplicationError } from "@/app/constants/applicationError";
-import { DashboardInfoResponse } from "@/app/models/IDashboardInfoResponse";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
-import { PaymentStatus } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export async function fetchRecentTransactions(req: NextRequest) {
@@ -27,6 +25,13 @@ export async function fetchRecentTransactions(req: NextRequest) {
       take: 15,
       orderBy: {
         createdAt: "desc",
+      },
+      include: {
+        event: {
+          select: {
+            title: true,
+          },
+        },
       },
       //   include: {
       //     event: true,
