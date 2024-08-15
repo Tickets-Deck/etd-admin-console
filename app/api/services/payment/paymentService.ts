@@ -20,6 +20,9 @@ export async function fetchPayments(req: NextRequest) {
                     event: true
                 }
             }
+        },
+        orderBy: {
+            createdAt: "desc"
         }
     });
     
