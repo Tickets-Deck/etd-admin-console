@@ -40,4 +40,9 @@ export class ApplicationRoutes {
    * The route to the payments page
    */
   static readonly Payments = "/payments";
+
+  /**
+   * The route to the orders page
+   */
+  static readonly Orders = "/orders";
 }
