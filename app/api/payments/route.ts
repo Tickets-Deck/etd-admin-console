@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Call the function to fetch the user dashboard data
-    const operation = await fetchPayments(req);
+    const operation = await fetchPayments();
 
     // If operation fails, return the error
     if (operation.error) {
