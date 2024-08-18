@@ -4,7 +4,7 @@ import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
 import { TransactionFeeRequest } from "../models/ITransactionFee";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL_LIVE,
 });
 
 export function useFetchDashboardInfo() {
