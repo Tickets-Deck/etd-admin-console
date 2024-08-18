@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Call the function to fetch the user dashboard data
+    // Call the function to fetch payments
     const operation = await fetchPayments();
 
     // If operation fails, return the error
