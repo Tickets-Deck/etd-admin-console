@@ -3,7 +3,7 @@ import { ApiRoutes } from "./apiRoutes";
 import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_DEV,
+  baseURL: ApiRoutes.BASE_URL_TEST,
 });
 
 export function useFetchDashboardInfo() {
