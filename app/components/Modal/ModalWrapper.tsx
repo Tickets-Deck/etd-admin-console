@@ -1,6 +1,8 @@
 import { Dispatch, FunctionComponent, ReactElement, ReactNode, SetStateAction, useRef, CSSProperties } from "react";
 // import modalStyle from "../../styles/ModalStyle.module.scss";
 import useRemoveHtmlElementFromDOM from "../../hooks/useRemoveHtmlElementFromDOM";
+import { motion } from "framer-motion"
+import { modalCardVariant, modalOverlayVariant } from "@/app/animations/modal";
 
 interface ModalWrapperProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
@@ -19,17 +21,23 @@ const ModalWrapper: FunctionComponent<ModalWrapperProps> = (
     !disallowRemovalTrigger && useRemoveHtmlElementFromDOM(modalContainerRef, visibility, 350, "flex");
 
     return (
-        <div className={`fixed w-full h-full top-0 left-0 z-[120] grid place-items-center ${visibility ? "" : "pointer-events-none"}`} ref={modalContainerRef}>
-            <div
+        <motion.div
+            initial="closed"
+            animate={visibility ? "opened" : "closed"}
+            className={`fixed w-full h-full top-0 left-0 z-[120] grid place-items-center ${visibility ? "" : "pointer-events-none"}`} ref={modalContainerRef}>
+
+            <motion.div
+                variants={modalOverlayVariant}
                 className={visibility ? "bg-container-grey/40 absolute w-full h-full top-0 left-0" : "opacity-0"}
-                onClick={() => disallowOverlayFunction ? {} : setVisibility(false)}>
-            </div>
-            <div
+                onClick={() => disallowOverlayFunction ? {} : setVisibility(false)} />
+
+            <motion.div
+                variants={modalCardVariant}
                 className={`bg-primary-sub translate-y-0 z-[120] w-full m-auto ${visibility ? "" : " translate-y-12 opacity-0"}`}
                 style={styles}>
                 {children}
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }
 
