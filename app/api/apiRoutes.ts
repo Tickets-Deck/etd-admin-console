@@ -37,4 +37,9 @@ export class ApiRoutes {
    * The route to Users endpoint
    */
   static Users: string = "api/users";
+
+    /**
+     * The route to Ticket Orders endpoint
+     */
+    static TicketOrders: string = "api/ticket-orders";
 }
