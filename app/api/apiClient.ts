@@ -1,8 +1,9 @@
 import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
+import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_LIVE,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useFetchDashboardInfo() {
@@ -35,4 +36,25 @@ export function useFetchUsers() {
   }
 
   return fetchUsers;
+}
+
+export function useFetchTicketOrders() {
+  async function fetchTicketOrders(userId: string) {
+    return API.get(`${ApiRoutes.TicketOrders}?userId=${userId}`);
+  }
+
+  return fetchTicketOrders;
+}
+
+export function useFetchTicketOrder() {
+  async function fetchTicketOrder({
+    userId,
+    orderId,
+  }: FetchSingleTicketOrderRequest) {
+    return API.get(
+      `${ApiRoutes.TicketOrders}?userId=${userId}&orderId=${orderId}`
+    );
+  }
+
+  return fetchTicketOrder;
 }
