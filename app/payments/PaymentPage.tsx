@@ -11,6 +11,7 @@ import { Payment } from '../models/IPayment';
 import moment from 'moment';
 import { serializer } from '../constants/serializer';
 import { PaymentStatus } from '../enums/IPaymentStatus';
+import { NairaPrice } from '../constants/priceFormatter';
 
 type Props = {}
 
@@ -24,11 +25,10 @@ const PaymentPage = (props: Props) => {
     const [isLoading, setIsLoading] = useState(true);
     const [payments, setPayments] = useState<Payment[]>([]);
 
-    async function handleFetchDashboardInfo() {
+    async function handleFetchPayments() {
 
         await fetchPayments(user?.id as string)
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response.data);
                 setPayments(response.data);
             })
             .catch((error) => {
@@ -39,22 +39,9 @@ const PaymentPage = (props: Props) => {
             });
     };
 
-    function getStatusStyle(status: PaymentStatus) {
-        switch (status) {
-            case PaymentStatus.Pending:
-                return 'text-warning bg-warning/10 p-2 px-3 rounded-full';
-            case PaymentStatus.Paid:
-                return 'text-success bg-success/10 p-2 px-3 rounded-full';
-            case PaymentStatus.Failed:
-                return 'text-failed bg-failed/10 p-2 px-3 rounded-full';
-            default:
-                return;
-        }
-    }
-
     useEffect(() => {
         if (!user) return;
-        handleFetchDashboardInfo();
+        handleFetchPayments();
     }, [user]);
 
     return (
@@ -90,11 +77,11 @@ const PaymentPage = (props: Props) => {
                                     <span className="ml-2 text-sm w-48 text-wrap">{payment.ticketOrder.contactEmail}</span>
                                 </div>,
                                 <span className="text-[#666666] text-left">{payment.ticketOrder.event.title}</span>,
-                                <span className="text-[#666666]">&#8358;{Number(payment.amount).toLocaleString()}</span>,
+                                <span className="text-[#666666]">{NairaPrice.format(Number(payment.amount))}</span>, 
                                 <span className="text-[#666666] whitespace-nowrap">{moment(payment.createdAt).format("MMM D, YYYY | hh:mma")}</span>,
                                 <span className="text-[#666666]">{payment.ticketOrder.quantity}</span>,
                                 <span className="text-[#666666]">{payment.paymentServiceProvider}</span>,
-                                <span className={getStatusStyle(payment.paymentStatus)}>{serializer.paymentStatus(payment.paymentStatus)}</span>,
+                                <span className={styles.getStatusStyle(payment.paymentStatus)}>{serializer.paymentStatus(payment.paymentStatus)}</span>,
                                 <div className='flex flex-row gap-1'>
                                     <button className="p-2 px-4 bg-gray-200 text-dark-grey/80 text-xs rounded-full hover:opacity-55">
                                         Confirm
