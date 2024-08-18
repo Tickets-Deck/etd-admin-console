@@ -3,46 +3,30 @@ import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
-export async function fetchPayments(req: NextRequest) {
-  // Get the search params from the request url
-  const searchParams = new URLSearchParams(req.url.split("?")[1]);
-
-  // Get the userId from the search params
-  const userId = searchParams.get("userId");
-
-  // If a userId is provided, find the adminUser with that id
-  if (userId) {
-    const allPayments = await prisma.payments.findMany({
+export async function fetchPayments() {
+  const allPayments = await prisma.payments.findMany({
+    include: {
+      user: true,
+      ticketOrder: {
         include: {
-            user: true,
-            ticketOrder: {
-                include: {
-                    event: true
-                }
-            }
+          event: true,
         },
-        orderBy: {
-            createdAt: "desc"
-        }
-    });
-    
-    // If the user is found, return the user
-    if (allPayments) {
-      // Return the dashboard data
-      return { data: allPayments };
-    } else {
-      // If the user is not found, return 404
-      return {
-        error: ApplicationError.AdminUserWithIdNotFound.Text,
-        errorCode: ApplicationError.AdminUserWithIdNotFound.Code,
-        statusCode: StatusCodes.BadRequest,
-      };
-    }
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  // If the user is found, return the user
+  if (allPayments) {
+    // Return the dashboard data
+    return { data: allPayments };
   } else {
-    // If no userId is provided, return 400
+    // If the user is not found, return 404
     return {
-      error: ApplicationError.AdminUserIdIsRequired.Text,
-      errorCode: ApplicationError.AdminUserIdIsRequired.Code,
+      error: ApplicationError.AdminUserWithIdNotFound.Text,
+      errorCode: ApplicationError.AdminUserWithIdNotFound.Code,
       statusCode: StatusCodes.BadRequest,
     };
   }
