@@ -198,7 +198,7 @@ export class ApplicationError extends BaseApplicationError {
   };
 
   //#endregion
-  
+
   //#region AdminUser Errors
 
   /**
@@ -383,6 +383,14 @@ export class ApplicationError extends BaseApplicationError {
   static TicketOrderHasBeenProcessed: IApplicationError = {
     Text: "Ticket order has been processed",
     Code: "TICKET_ORDER_1002",
+  };
+
+  /**
+   * The error message for ~ Failed to fetch ticket orders
+   */
+  static FailedToFetchTicketOrders: IApplicationError = {
+    Text: "Failed to fetch ticket orders",
+    Code: "TICKET_ORDER_1003",
   };
 
   //#endregion
