@@ -18,11 +18,11 @@ interface SingleTicketOrderUser {
 }
 
 interface SingleTicketOrderOrderedTicketTicket {
-    name: string;
+  name: string;
 }
 
 interface SingleTicketOrderOrderedTicket {
-  ticket: SingleTicketOrderOrderedTicketTicket
+  ticket: SingleTicketOrderOrderedTicketTicket;
 }
 
 export interface FetchSingleTicketOrderRequest {
@@ -49,6 +49,9 @@ export interface SingleTicketOrder {
   quantity: number;
   totalPrice: string;
   contactEmail: string;
+  contactFirstName: string | null;
+  contactLastName: string | null;
+  contactNumber: string | null;
   orderId: string;
   orderStatus: OrderStatus;
   paymentStatus: PaymentStatus;
