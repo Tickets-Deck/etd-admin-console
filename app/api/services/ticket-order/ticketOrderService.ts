@@ -13,6 +13,9 @@ export async function fetchAllTicketOrders() {
       createdAt: true,
       quantity: true,
       paymentStatus: true,
+      contactFirstName: true,
+      contactLastName: true,
+      contactNumber: true,
       payments: {
         select: {
           paymentServiceProvider: true,
@@ -47,29 +50,29 @@ export async function fetchSingleTicketOrder(orderId: string) {
       orderId: orderId,
     },
     include: {
-        tickets: {
+      tickets: {
+        select: {
+          ticket: {
             select: {
-                ticket: {
-                    select: {
-                        name: true,
-                    }
-                }
-            }
+              name: true,
+            },
+          },
         },
-        user: {
-            select: {
-                firstName: true,
-                lastName: true,
-                phone: true,
-                email: true,
-            }
+      },
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phone: true,
+          email: true,
         },
-        event: {
-            select: {
-                title: true,
-            }
-        }
-    }
+      },
+      event: {
+        select: {
+          title: true,
+        },
+      },
+    },
   });
 
   if (!singleTicketOrder) {
