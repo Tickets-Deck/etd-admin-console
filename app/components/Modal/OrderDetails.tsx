@@ -48,36 +48,29 @@ const OrderDetails = ({ visibility, setVisibility, ticketOrder }: Props) => {
                             {ticketOrder.tickets.map((orderedTicket) => orderedTicket.ticket.name).join(', ')}
                         </p>
                     </div>
+                    <span className='text-sm p-1 text-dark-grey/50 text-center'>{ticketOrder.user ? 'Customer' : 'Contact'} details:</span>
                     {
                         ticketOrder.user ?
                             <>
                                 <div className='flex flex-row gap-2 p-1 rounded-md'>
                                     <p className="text-sm text-dark-grey/50 font-semibold">
-                                        Customer first name:
+                                        Full name:
                                     </p>
                                     <p className="text-sm">
-                                        {ticketOrder.user.firstName}
+                                        {`${ticketOrder.user.firstName} ${ticketOrder.user.lastName}`}
                                     </p>
                                 </div>
                                 <div className='flex flex-row gap-2 p-1 rounded-md'>
                                     <p className="text-sm text-dark-grey/50 font-semibold">
-                                        Customer last name:
+                                        Phone number:
                                     </p>
                                     <p className="text-sm">
-                                        {ticketOrder.user.lastName}
+                                        {ticketOrder.user.phone || ticketOrder.contactNumber || 'N/A'}
                                     </p>
                                 </div>
                                 <div className='flex flex-row gap-2 p-1 rounded-md'>
                                     <p className="text-sm text-dark-grey/50 font-semibold">
-                                        Customer phone number:
-                                    </p>
-                                    <p className="text-sm">
-                                        {ticketOrder.user.phone || 'N/A'}
-                                    </p>
-                                </div>
-                                <div className='flex flex-row gap-2 p-1 rounded-md'>
-                                    <p className="text-sm text-dark-grey/50 font-semibold">
-                                        Customer email:
+                                        Email:
                                     </p>
                                     <p className="text-sm">
                                         {ticketOrder.user.email}
@@ -87,15 +80,31 @@ const OrderDetails = ({ visibility, setVisibility, ticketOrder }: Props) => {
                             <div>
                                 <div className='flex flex-row gap-2 p-1 rounded-md'>
                                     <p className="text-sm text-dark-grey/50 font-semibold">
-                                        Contact email:
+                                        Email:
                                     </p>
                                     <p className="text-sm">
                                         {ticketOrder.contactEmail}
                                     </p>
                                 </div>
-                                <span className='p-1 italic text-sm text-dark-grey/50'>
+                                <div className='flex flex-row gap-2 p-1 rounded-md'>
+                                    <p className="text-sm text-dark-grey/50 font-semibold">
+                                        Full name:
+                                    </p>
+                                    <p className="text-sm">
+                                        {ticketOrder.contactFirstName ? `${ticketOrder.contactFirstName} ${ticketOrder.contactLastName}` : 'N/A'}
+                                    </p>
+                                </div>
+                                <div className='flex flex-row gap-2 p-1 rounded-md'>
+                                    <p className="text-sm text-dark-grey/50 font-semibold">
+                                        Phone number:
+                                    </p>
+                                    <p className="text-sm">
+                                        {ticketOrder.contactNumber || 'N/A'}
+                                    </p>
+                                </div>
+                                {/* <span className='p-1 italic text-sm text-dark-grey/50'>
                                     No customer information available.
-                                </span>
+                                </span> */}
                             </div>
                     }
                 </div>
