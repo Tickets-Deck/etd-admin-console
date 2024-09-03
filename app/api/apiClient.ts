@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
 import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
+import { TransactionFeeRequest } from "../models/ITransactionFee";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_TEST,
@@ -57,4 +58,28 @@ export function useFetchTicketOrder() {
   }
 
   return fetchTicketOrder;
+}
+
+export function useFetchTransactionFees() {
+    async function fetchTransactionFees(userId: string) {
+        return API.get(`${ApiRoutes.TransactionFees}?userId=${userId}`);
+    }
+    
+    return fetchTransactionFees;
+}
+
+export function useCreateTransactionFee() {
+    async function createTransactionFee(userId: string, data: TransactionFeeRequest) {
+        return API.post(`${ApiRoutes.TransactionFees}?userId=${userId}`, data);
+    }
+    
+    return createTransactionFee;
+}
+
+export function useDeleteTransactionFee() {
+    async function deleteTransactionFee(userId: string, transactionFeeId: string) {
+        return API.delete(`${ApiRoutes.TransactionFees}?userId=${userId}&transactionFeeId=${transactionFeeId}`);
+    }
+    
+    return deleteTransactionFee;
 }
