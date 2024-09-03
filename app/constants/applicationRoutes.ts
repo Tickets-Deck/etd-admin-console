@@ -42,6 +42,11 @@ export class ApplicationRoutes {
   static readonly Payments = "/payments";
 
   /**
+   * The route to the settings page
+   */
+  static readonly Settings = "/settings";
+
+  /**
    * The route to the orders page
    */
   static readonly Orders = "/orders";
