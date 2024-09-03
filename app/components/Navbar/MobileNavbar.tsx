@@ -37,6 +37,10 @@ const MobileNavbarOverlay: FunctionComponent<MobileNavbarOverlayProps> = ({ navb
             link: ApplicationRoutes.Payments,
             text: "Payments"
         },
+        {
+            link: ApplicationRoutes.Settings,
+            text: "Settings"
+        },
     ];
 
     return (
