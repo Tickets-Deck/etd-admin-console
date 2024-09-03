@@ -42,4 +42,9 @@ export class ApiRoutes {
      * The route to Ticket Orders endpoint
      */
     static TicketOrders: string = "api/ticket-orders";
+
+    /**
+     * The route to Transaction Fees endpoint
+     */
+    static TransactionFees: string = "api/transaction-fees";
 }
