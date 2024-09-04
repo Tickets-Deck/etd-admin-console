@@ -1,5 +1,5 @@
 import { FunctionComponent, ReactElement } from "react";
-import { styles } from "../styles/styles";
+import EventsPage from "./EventsPage";
 
 interface EventsProps {
 
@@ -7,9 +7,7 @@ interface EventsProps {
 
 const Events: FunctionComponent<EventsProps> = (): ReactElement => {
     return (
-        <main className={styles.mainPageStyle}>
-            Events
-        </main>
+        <EventsPage />
     );
 }
 
