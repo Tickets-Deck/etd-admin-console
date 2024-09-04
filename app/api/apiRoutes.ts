@@ -38,13 +38,18 @@ export class ApiRoutes {
    */
   static Users: string = "api/users";
 
-    /**
-     * The route to Ticket Orders endpoint
-     */
-    static TicketOrders: string = "api/ticket-orders";
+  /**
+   * The route to Events endpoint
+   */
+  static Events: string = "api/events";
 
-    /**
-     * The route to Transaction Fees endpoint
-     */
-    static TransactionFees: string = "api/transaction-fees";
+  /**
+   * The route to Ticket Orders endpoint
+   */
+  static TicketOrders: string = "api/ticket-orders";
+
+  /**
+   * The route to Transaction Fees endpoint
+   */
+  static TransactionFees: string = "api/transaction-fees";
 }
