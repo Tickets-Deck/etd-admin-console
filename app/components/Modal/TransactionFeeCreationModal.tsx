@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
+import { FunctionComponent, ReactElement, Dispatch, SetStateAction, useEffect } from "react";
 import ModalWrapper from "./ModalWrapper";
 import { CloseIcon } from "../SVGs/SVGicons";
 import { toast } from "sonner";
@@ -25,6 +25,12 @@ const TransactionFeeCreationModal: FunctionComponent<TransactionFeeCreationModal
 
         return true
     }
+
+    useEffect(() => {
+        if (visibility) {
+            setFeeDetails({ percentage: 0, flatFee: 0, eventId: "" })
+        }
+    }, [visibility])
 
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
@@ -58,6 +64,11 @@ const TransactionFeeCreationModal: FunctionComponent<TransactionFeeCreationModal
                         name={"percentage"}
                         value={feeDetails?.percentage || ""}
                         onChange={(e) => {
+                            const value = Number(e.target.value);
+                            console.log({ value });
+                            if (isNaN(value)) return;
+                            if (value < 0 || value > 99) return;
+                            // onFormValueChange(e, setNameErrorMsg)
                             setFeeDetails({ ...feeDetails as TransactionFeeRequest, percentage: parseInt(e.target.value) })
                         }}
                     />
