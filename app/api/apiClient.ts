@@ -4,7 +4,7 @@ import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
 import { TransactionFeeRequest } from "../models/ITransactionFee";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_LIVE,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useFetchDashboardInfo() {
@@ -82,4 +82,12 @@ export function useDeleteTransactionFee() {
     }
     
     return deleteTransactionFee;
+}
+
+export function useFetchEvents() {
+  async function fetchEvents(userId: string) {
+    return API.get(`${ApiRoutes.Events}?userId=${userId}`);
+  }
+
+  return fetchEvents;
 }
