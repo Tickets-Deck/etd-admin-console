@@ -52,7 +52,8 @@ const EventsPage: FunctionComponent<EventsPageProps> = (): ReactElement => {
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Event name</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Event code</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Attendees</th>
-                                <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Type</th>
+                                <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Coupons</th>
+                                <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Tickets</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Actions</th>
                             </tr>
                             {
@@ -61,8 +62,9 @@ const EventsPage: FunctionComponent<EventsPageProps> = (): ReactElement => {
                                         <tr key={index}>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.title}</td>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.eventId}</td>
-                                            <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.ticketOrdersCount}</td>
-                                            <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">0</td>
+                                            <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.numberOfTicketOrders}</td>
+                                            <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.numberOfCouponCodes}</td>
+                                            <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.numberOfTickets}</td>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10 flex flex-row gap-1">
                                                 <Button minBtn className="!bg-light-grey !text-dark-grey whitespace-nowrap">View details</Button>
                                             </td>
