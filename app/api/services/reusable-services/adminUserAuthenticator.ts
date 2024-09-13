@@ -28,7 +28,7 @@ export async function authenticateAdminUser(req: NextRequest) {
       {
         error: ApplicationError.AdminUserWithIdNotFound.Text,
       },
-      { status: StatusCodes.BadRequest }
+      { status: StatusCodes.Unauthorized }
     );
   }
 
