@@ -28,7 +28,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
         <motion.nav
             initial="closed"
             animate={navbarIsVisible ? "opened" : "closed"}
-            className="bg-white flex flex-col gap-4 items-center fixed top-0 left-0 w-full p-4 pt-0 shadow-lg shadow-gray-200">
+            className="bg-white flex flex-col gap-4 items-center fixed top-0 left-0 w-full p-4 pt-0 z-50 shadow-lg shadow-gray-200">
             <Link href={ApplicationRoutes.Home} className="w-16 h-16 bg-primary-sub rounded-b-3xl grid place-items-center">
                 <div className="w-9 h-9 relative">
                     <CustomImage src={images.logoPurple} alt="Logo" />
