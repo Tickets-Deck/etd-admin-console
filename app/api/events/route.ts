@@ -35,10 +35,10 @@ export async function GET(req: NextRequest) {
 
     // Return the response
     return NextResponse.json(operation.data, { status: StatusCodes.Success });
-  } catch {
+  } catch (error) {
     // Return an error if the operation fails
     return NextResponse.json(
-      { error: ApplicationError.FailedToFetchTransactionFees.Text },
+      { error: ApplicationError.FailedToFetchEvents.Text },
       { status: StatusCodes.InternalServerError }
     );
   }
