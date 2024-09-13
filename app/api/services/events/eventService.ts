@@ -1,6 +1,3 @@
-import { ApplicationError } from "@/app/constants/applicationError";
-import { OrderStatus } from "@/app/enums/IOrderStatus";
-import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
 
 export async function fetchAllEvents() {
@@ -15,8 +12,31 @@ export async function fetchAllEvents() {
           name: true,
         },
       },
+      _count: {
+        select: {
+          tickets: true,
+          ticketOrders: {
+            where: {
+              orderStatus: "Confirmed",
+            },
+          },
+          couponCodes: true,
+        },
+      },
     },
   });
 
-  return { data: allEvents };
+  // construct the data
+  const data = allEvents.map((event) => {
+    return {
+      id: event.id,
+      title: event.title,
+      eventId: event.eventId,
+      numberOfTicketOrders: event._count.ticketOrders,
+      numberOfCouponCodes: event._count.couponCodes,
+      numberOfTickets: event._count.tickets,
+    };
+  });
+
+  return { data: data };
 }
