@@ -120,7 +120,18 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
                         placeholder="Code"
                         name={"code"}
                         value={couponCodeDetails?.code || ""}
-                        onChange={(e) => setCouponCodeDetails({ ...couponCodeDetails as CouponCodeRequest, code: e.target.value })}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            console.log({ value });
+                            
+                            // check if the value contains any special characters or lowercase letters
+                            if (!/^[0-9A-Z]{1,6}$/.test(value)) {
+                                toast.error("Code should only contain uppercase letters, numbers, and be up to 6 characters long");
+                                return;
+                            }
+
+                            setCouponCodeDetails({ ...couponCodeDetails as CouponCodeRequest, code: e.target.value })
+                        }}
                     />
                     <input
                         className="w-full p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg outline-none"
