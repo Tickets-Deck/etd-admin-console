@@ -4,6 +4,7 @@ import { ButtonLoader } from "../Loader/ComponentLoader";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     btnIcon?: React.ReactElement;
     minBtn?: boolean;
+    isLoading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -16,7 +17,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
             >
                 {btnIcon && <span>{btnIcon}</span>}
-                {props.disabled && <ButtonLoader />}
+                {props.isLoading && <ButtonLoader />}
                 {props.children}
             </button>
         );
