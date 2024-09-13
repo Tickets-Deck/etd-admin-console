@@ -2,6 +2,7 @@ import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
 import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
 import { TransactionFeeRequest } from "../models/ITransactionFee";
+import { CouponCodeRequest } from "../models/ICoupon";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_DEV,
@@ -90,4 +91,28 @@ export function useFetchEvents() {
   }
 
   return fetchEvents;
+}
+
+export function useCreateCouponCode() {
+  async function createCouponCode(userId: string, data: CouponCodeRequest) {
+    return API.post(`${ApiRoutes.CouponCodes}?userId=${userId}`, data);
+  }
+
+  return createCouponCode;
+}
+
+export function useFetchCouponCodes() {
+    async function fetchCouponCodes(userId: string) {
+        return API.get(`${ApiRoutes.CouponCodes}?userId=${userId}`);
+    }
+    
+    return fetchCouponCodes;
+}
+
+export function useDeleteCouponCode() {
+    async function deleteCouponCode(userId: string, couponCodeId: string) {
+        return API.delete(`${ApiRoutes.CouponCodes}?userId=${userId}&couponId=${couponCodeId}`);
+    }
+    
+    return deleteCouponCode;
 }
