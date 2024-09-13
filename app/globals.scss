@@ -52,3 +52,105 @@ body {
 .snapxChild {
     scroll-snap-align: center;
 }
+
+
+//   FLUENT UI DATEPICKER ================
+.ms-DatePicker,
+.root-113 {
+  height: fit-content;
+  width: 100%;
+  transform: translateY(1px);
+  border: none;
+  outline: none;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #a6a6a6 !important;
+  background-color: white;
+  font-size: 14px !important;
+  overflow: hidden;
+
+  i[data-icon-name='Calendar'] {
+    display: none;
+  }
+}
+
+div[role='combobox'] {
+  background-color: white !important;
+}
+
+#DatePicker0-label,
+#DatePicker366-label,
+#DatePicker424-label,
+.ms-TextField-fieldGroup,
+.ms-TextField-field,
+.fieldGroup-106,
+.readOnlyPlaceholder-116,
+.readOnlyPlaceholder-103,
+div[role='combobox'] {
+  padding: 0px;
+  font-size: 0.75rem;
+  border: none !important;
+  outline: none;
+  background-color: rgba($color: #b1883d, $alpha: 0) !important;
+  background: rgba($color: #b1883d, $alpha: 0) !important;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #333 !important;
+  font-weight: 500;
+}
+
+.ms-CalendarDay-dayIsToday {
+  background-color: #b1883d !important;
+}
+
+:focus-visible {
+  outline: none;
+}
+
+.css-137 {
+  border: none;
+  &::after {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(96, 94, 92);
+  }
+}
+.css-162 {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(96, 94, 92);
+  &::after {
+    // border: none !important;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(96, 94, 92);
+  }
+}
+.css-136 {
+  border-width: 0px;
+  border-style: solid;
+  border-color: #b1883d;
+  border-radius: 10px;
+  &::after {
+    border-width: 1px;
+    border-style: solid;
+    overflow: hidden;
+    border: none !important;
+  }
+}
+
+.root-140 {
+  background-color: transparent;
+}
+
+.css-120 {
+  border-radius: 8px;
+  //   border: 1px solid #B1883D;
+  outline: none;
+}
+
+.ms-ComboBox-container {
+  border: none;
+  outline: none;
+}
+.calloutMain-150 {
+  min-width: 130px;
+}
