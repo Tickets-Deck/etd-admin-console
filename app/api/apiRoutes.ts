@@ -52,4 +52,9 @@ export class ApiRoutes {
    * The route to Transaction Fees endpoint
    */
   static TransactionFees: string = "api/transaction-fees";
+
+  /**
+   * The route to Coupon Codes endpoint
+   */
+  static CouponCodes: string = "api/coupon";
 }
