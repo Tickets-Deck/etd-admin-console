@@ -8,6 +8,7 @@ import { ApplicationRoutes } from "../constants/applicationRoutes";
 import OfflineAlert from "../components/Modal/OfflineAlert";
 import { useOnline } from "../hooks/useOnline";
 import { ApplicationContext, ApplicationContextData } from "../contexts/ApplicationContext";
+import { Toaster } from "sonner";
 
 interface LayoutProps {
     children?: ReactNode;
@@ -42,6 +43,15 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                 easing="ease"
                 speed={200}
                 shadow="0 0 10px #f1fa9e,0 0 5px #ceb0fa"
+            />
+            <Toaster
+                position="top-center"
+                richColors
+                closeButton
+                toastOptions={{
+                    duration: 3000,
+                    unstyled: false,
+                }}
             />
             {
                 pathname !== ApplicationRoutes.SignIn &&
