@@ -62,19 +62,21 @@ const CouponCodeSection: FunctionComponent<CouponCodeSectionProps> = ({ session 
                 setCouponCodeCreationModalVisibility(false);
             })
             .catch((error) => {
+                setIsCreatingCouponCode(false);
                 if (error?.response?.data?.errorCode == ApplicationError.CouponCodeAlreadyExists.Code) {
                     toast.error("Coupon code already exists");
-                    setIsCreatingCouponCode(false);
                     return;
                 }
                 if (error?.response?.data?.errorCode == ApplicationError.CouponCodeTooLong.Code) {
                     toast.error("Coupon code is too long");
-                    setIsCreatingCouponCode(false);
                     return;
                 }
                 if (error?.response?.data?.errorCode == ApplicationError.EventWithIdNotFound.Code) {
                     toast.error("Event with specified Event Code was not found. Please check the Event Code and try again.");
-                    setIsCreatingCouponCode(false);
+                    return;
+                }
+                if (error?.response?.data?.errorCode == ApplicationError.InvalidCouponExpirationDate.Code) {
+                    toast.error("Invalid coupon expiration date. Please check the expiration date and try again.");
                     return;
                 }
                 toast.error("Failed to create coupon code. Please try again.");
