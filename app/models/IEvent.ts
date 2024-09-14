@@ -5,6 +5,9 @@ export type EventTicket = {
 export type EventResponse = {
   id: string;
   title: string;
+  date: Date;
+  time: string;
+  revenue: number;
   eventId: string;
   numberOfTicketOrders: number;
   numberOfCouponCodes: number;
