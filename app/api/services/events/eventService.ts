@@ -7,10 +7,26 @@ export async function fetchAllEvents() {
       title: true,
       eventId: true,
       ticketOrdersCount: true,
+      date: true,
+      time: true,
       tickets: {
         select: {
           name: true,
         },
+      },
+      ticketOrders: {
+        select: {
+            payments: {
+                where: {
+                    ticketOrder: {
+                        orderStatus: "Confirmed"
+                    }
+                },
+                select: {
+                    amountPaid: true,
+                }
+            }
+        }
       },
       _count: {
         select: {
@@ -24,6 +40,9 @@ export async function fetchAllEvents() {
         },
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    }
   });
 
   // construct the data
@@ -32,6 +51,9 @@ export async function fetchAllEvents() {
       id: event.id,
       title: event.title,
       eventId: event.eventId,
+      date: event.date,
+      time: event.time,
+      revenue: event.ticketOrders.reduce((acc, curr) => acc + curr.payments.reduce((acc, curr) => acc + Number(curr.amountPaid), 0), 0),
       numberOfTicketOrders: event._count.ticketOrders,
       numberOfCouponCodes: event._count.couponCodes,
       numberOfTickets: event._count.tickets,
