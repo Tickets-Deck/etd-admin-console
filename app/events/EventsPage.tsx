@@ -6,6 +6,7 @@ import { useFetchEvents } from "../api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "../constants/catchError";
 import { EventResponse } from "../models/IEvent";
+import moment from "moment";
 
 interface EventsPageProps {
 
@@ -26,7 +27,7 @@ const EventsPage: FunctionComponent<EventsPageProps> = (): ReactElement => {
                 setEvents(response.data);
             })
             .catch((error) => {
-                console.log("🚀 ~ .catch ~ error", error)
+                // console.log("🚀 ~ .catch ~ error", error);
                 catchError(error);
             })
             .finally(() => {
@@ -51,7 +52,9 @@ const EventsPage: FunctionComponent<EventsPageProps> = (): ReactElement => {
                             <tr>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Event name</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Event code</th>
+                                <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Date & time</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Attendees</th>
+                                <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Revenue</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Coupons</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Tickets</th>
                                 <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Actions</th>
@@ -62,7 +65,9 @@ const EventsPage: FunctionComponent<EventsPageProps> = (): ReactElement => {
                                         <tr key={index}>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.title}</td>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.eventId}</td>
+                                            <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{moment(event.date).format("DD MMM YYYY")} {event.time.toLowerCase()}</td>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.numberOfTicketOrders}</td>
+                                            <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.revenue.toLocaleString("en-NG", { style: "currency", currency: "NGN" })}</td>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.numberOfCouponCodes}</td>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{event.numberOfTickets}</td>
                                             <td className="p-3 text-sm border-r-[1px] border-dark-grey/10 flex flex-row gap-1">
