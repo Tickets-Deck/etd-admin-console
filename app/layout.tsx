@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.scss";
+import "react-quill/dist/quill.snow.css";
 import Layout from "./shared/Layout";
 import { getServerSession } from "next-auth";
 import { authOptions } from '@/auth';
