@@ -15,27 +15,26 @@ export async function fetchAllEvents() {
         },
       },
       ticketOrders: {
+        where: {
+            orderStatus: "Confirmed"
+        },
         select: {
             payments: {
-                where: {
-                    ticketOrder: {
-                        orderStatus: "Confirmed"
-                    }
-                },
+                // where: {
+                //     ticketOrder: {
+                //         orderStatus: "Confirmed"
+                //     }
+                // },
                 select: {
                     amountPaid: true,
                 }
-            }
+            },
+            quantity: true
         }
       },
       _count: {
         select: {
           tickets: true,
-          ticketOrders: {
-            where: {
-              orderStatus: "Confirmed",
-            },
-          },
           couponCodes: true,
         },
       },
@@ -54,7 +53,7 @@ export async function fetchAllEvents() {
       date: event.date,
       time: event.time,
       revenue: event.ticketOrders.reduce((acc, curr) => acc + curr.payments.reduce((acc, curr) => acc + Number(curr.amountPaid), 0), 0),
-      numberOfTicketOrders: event._count.ticketOrders,
+      numberOfTicketOrders: event.ticketOrders.reduce((acc, curr) => acc + curr.quantity, 0),
       numberOfCouponCodes: event._count.couponCodes,
       numberOfTickets: event._count.tickets,
     };
