@@ -6,7 +6,7 @@ import { CouponCodeRequest } from "../models/ICoupon";
 import { IEventEmail } from "../models/IEmail";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_DEV,
+  baseURL: ApiRoutes.BASE_URL_LIVE,
 });
 
 export function useFetchDashboardInfo() {
