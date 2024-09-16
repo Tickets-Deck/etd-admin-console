@@ -825,5 +825,13 @@ export class ApplicationError extends BaseApplicationError {
     Code: "COUPON_CODE_1007",
   };
 
+  /**
+   * The error message for ~ Coupon cannot be applied to free event
+   */
+  static CouponCannotBeAppliedToFreeEvent: IApplicationError = {
+    Text: "Coupon cannot be applied to free event",
+    Code: "COUPON_CODE_1008",
+  };
+
   //#endregion
 }
