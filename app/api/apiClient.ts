@@ -3,6 +3,7 @@ import { ApiRoutes } from "./apiRoutes";
 import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
 import { TransactionFeeRequest } from "../models/ITransactionFee";
 import { CouponCodeRequest } from "../models/ICoupon";
+import { IEventEmail } from "../models/IEmail";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_DEV,
@@ -115,4 +116,12 @@ export function useDeleteCouponCode() {
     }
     
     return deleteCouponCode;
+}
+
+export function useSendEmailToAllTicketOrderContacts() {
+    async function sendEmailToAllTicketOrderContacts(userId: string, emailInfo: IEventEmail) {
+        return API.post(`${ApiRoutes.Events}?userId=${userId}`, emailInfo);
+    }
+    
+    return sendEmailToAllTicketOrderContacts;
 }
