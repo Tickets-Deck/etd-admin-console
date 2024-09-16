@@ -1,4 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import { compileThankYouTemplate, sendMail, sendMassMail } from "@/lib/mail";
+import { IEventEmail } from "@/app/models/IEmail";
+import { ApplicationError } from "@/app/constants/applicationError";
+import { StatusCodes } from "@/app/models/IStatusCodes";
 
 export async function fetchAllEvents() {
   const allEvents = await prisma.events.findMany({
@@ -16,21 +20,21 @@ export async function fetchAllEvents() {
       },
       ticketOrders: {
         where: {
-            orderStatus: "Confirmed"
+          orderStatus: "Confirmed",
         },
         select: {
-            payments: {
-                // where: {
-                //     ticketOrder: {
-                //         orderStatus: "Confirmed"
-                //     }
-                // },
-                select: {
-                    amountPaid: true,
-                }
+          payments: {
+            // where: {
+            //     ticketOrder: {
+            //         orderStatus: "Confirmed"
+            //     }
+            // },
+            select: {
+              amountPaid: true,
             },
-            quantity: true
-        }
+          },
+          quantity: true,
+        },
       },
       _count: {
         select: {
@@ -41,7 +45,7 @@ export async function fetchAllEvents() {
     },
     orderBy: {
       createdAt: "desc",
-    }
+    },
   });
 
   // construct the data
@@ -52,12 +56,79 @@ export async function fetchAllEvents() {
       eventId: event.eventId,
       date: event.date,
       time: event.time,
-      revenue: event.ticketOrders.reduce((acc, curr) => acc + curr.payments.reduce((acc, curr) => acc + Number(curr.amountPaid), 0), 0),
-      numberOfTicketOrders: event.ticketOrders.reduce((acc, curr) => acc + curr.quantity, 0),
+      revenue: event.ticketOrders.reduce(
+        (acc, curr) =>
+          acc +
+          curr.payments.reduce((acc, curr) => acc + Number(curr.amountPaid), 0),
+        0
+      ),
+      numberOfTicketOrders: event.ticketOrders.reduce(
+        (acc, curr) => acc + curr.quantity,
+        0
+      ),
       numberOfCouponCodes: event._count.couponCodes,
       numberOfTickets: event._count.tickets,
     };
   });
 
   return { data: data };
+}
+
+export async function sendEmailToAllTicketOrderContacts(
+  emailInfo: IEventEmail
+) {
+  console.log("Email Info", emailInfo);
+  // destructure the emailInfo
+  const { eventId, subject, body } = emailInfo;
+
+  // check if all fields are provided
+  if (!eventId || !subject || !body) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  const ticketOrders = await prisma.ticketOrders.findMany({
+    where: {
+      eventId: eventId,
+    },
+    select: {
+      event: {
+        select: {
+          title: true,
+        },
+      },
+      tickets: {
+        select: {
+          associatedEmail: true,
+          contactEmail: true,
+        },
+      },
+    },
+  });
+
+  // make the contacts array flat and remove duplicates
+  const contacts = ticketOrders.flatMap((ticketOrder) => {
+    return ticketOrder.tickets.map((ticket) => {
+      return ticket.associatedEmail || ticket.contactEmail;
+    });
+  });
+
+  const uniqueContacts = Array.from(new Set(contacts));
+
+  console.log("Contacts", uniqueContacts);
+
+  await sendMassMail({
+    to: uniqueContacts as string[],
+    // name: "Name of the event",
+    subject,
+    body: compileThankYouTemplate({
+      emailBody: body,
+      eventName: ticketOrders[0].event.title,
+    }),
+  });
+
+  return { contacts: uniqueContacts };
 }
