@@ -10,7 +10,11 @@ import {
   deleteTransactionFee,
   fetchAllTransactionFees,
 } from "../services/transaction-fee/feeService";
-import { fetchAllEvents } from "../services/events/eventService";
+import {
+  fetchAllEvents,
+  sendEmailToAllTicketOrderContacts,
+} from "../services/events/eventService";
+import { IEventEmail } from "@/app/models/IEmail";
 
 export async function GET(req: NextRequest) {
   // validate request method
@@ -39,6 +43,38 @@ export async function GET(req: NextRequest) {
     // Return an error if the operation fails
     return NextResponse.json(
       { error: ApplicationError.FailedToFetchEvents.Text },
+      { status: StatusCodes.InternalServerError }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  // validate request method
+  await validateRequestMethod(req, "POST");
+
+  // Authenticate admin user
+  const adminAuthResponse = await authenticateAdminUser(req);
+
+  if (adminAuthResponse) {
+    // If authentication failed, return the error response
+    return adminAuthResponse;
+  }
+
+  try {
+    // Get the body of the request
+    const request = (await req.json()) as IEventEmail;
+
+    const operation = await sendEmailToAllTicketOrderContacts(request);
+
+    if (operation.error) {
+      return customNextResponseError(operation);
+    }
+
+    return NextResponse.json(operation, { status: StatusCodes.Success });
+  } catch (error) {
+    console.log("Error", error);
+    return NextResponse.json(
+      { error: ApplicationError.InternalServerError.Text },
       { status: StatusCodes.InternalServerError }
     );
   }
