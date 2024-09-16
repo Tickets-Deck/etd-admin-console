@@ -79,6 +79,10 @@ const CouponCodeSection: FunctionComponent<CouponCodeSectionProps> = ({ session 
                     toast.error("Invalid coupon expiration date. Please check the expiration date and try again.");
                     return;
                 }
+                if (error?.response?.data?.errorCode == ApplicationError.CouponCannotBeAppliedToFreeEvent.Code) {
+                    toast.error("Coupon cannot be applied to free event");
+                    return;
+                }
                 toast.error("Failed to create coupon code. Please try again.");
 
                 // hide loader
@@ -141,93 +145,52 @@ const CouponCodeSection: FunctionComponent<CouponCodeSectionProps> = ({ session 
 
                 <div className="bg-white text-dark-grey w-full rounded-2xl p-5">
                     <p className="text-dark-grey/50 mb-5">Coupons are codes that can be used to get discounts on tickets</p>
-                    {/* <div className='my-3 flex flex-row items-end gap-4'>
-                            <div className='flex flex-col items-start'>
-                                <h2>General Coupon:</h2>
-                                <div className='flex flex-row gap-4'>
-                                    <p>Flat Fee: {generalFee?.flatFee ?? 0}</p>
-                                    <p>Percentage: {generalFee?.percentage ?? 0}%</p>
-                                </div>
-                            </div>
-                            <div>
-                                <Button
-                                    minBtn
-                                    onClick={() => {
-                                        setTransactionFeeReq({ percentage: parseInt(generalFee?.percentage as string), flatFee: generalFee?.flatFee } as TransactionFeeRequest)
-                                        setTransactionFeeCreationModalVisibility(true)
-                                    }}
-                                    className="!bg-light-grey !text-primary">
-                                    Edit
-                                </Button>
-                            </div>
-                        </div> */}
                     <div className="w-full flex flex-col gap-4 overflow-x-auto rounded-lg max-h-80 overflow-y-auto hideScrollBar">
-                        <table className="">
-                            <tbody>
-                                <tr>
-                                    <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Code</th>
-                                    <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Discount</th>
-                                    <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Event(s)</th>
-                                    <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Expiry date</th>
-                                    <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Usage left</th>
-                                    <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Actions</th>
-                                </tr>
-                                {
-                                    couponCodes?.map((couponCode, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.code}</td>
-                                                <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.discount}%</td>
-                                                <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.events.map(event => event.title).join(', ')}</td>
-                                                <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{moment(couponCode.validUntil).utc().format('MMM Do, YYYY')} at {moment(couponCode.validUntil).utc().format('h:mm a')}</td>
-                                                <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.maxUsage}</td>
-                                                <td className="p-3 text-sm border-r-[1px] border-dark-grey/10 flex flex-row gap-1">
-                                                    <Button
-                                                        minBtn
-                                                        disabled={isDeletingCouponCode && couponCode.id === selectedCouponCode?.id}
-                                                        className="!bg-failed !text-white disabled:pointer-events-none disabled:opacity-50"
-                                                        onClick={() => {
-                                                            setSelectedCouponCode(couponCode);
-                                                            handleDeleteCouponCode(couponCode.id);
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                                {/* <tr>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">John</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">Doe</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">simlexafol@gmail.com</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">Admin</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10 flex flex-row gap-1">
-                                <Button minBtn className="!bg-light-grey text-dark-grey whitespace-nowrap">View details</Button>
-                                {/* <Button minBtn className="bg-transparent text-red-500">Delete</Button> 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">John</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">Doe</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">simlexafol@gmail.com</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">Admin</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10 flex flex-row gap-1">
-                                <Button minBtn className="!bg-light-grey text-dark-grey whitespace-nowrap">View details</Button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">John</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">Doe</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">simlexafol@gmail.com</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10">Admin</td>
-                            <td className="p-2 py-3 text-sm border-r-[1px] border-dark-grey/10 flex flex-row gap-1">
-                                <Button minBtn className="!bg-light-grey text-dark-grey whitespace-nowrap">View details</Button>
-                            </td>
-                        </tr> */}
-                            </tbody>
-                        </table>
+                        {
+
+                            couponCodes && couponCodes?.length > 0 ?
+                                <table className="">
+                                    <tbody>
+                                        <tr>
+                                            <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Code</th>
+                                            <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Discount</th>
+                                            <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Event(s)</th>
+                                            <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Expiry date</th>
+                                            <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Usage left</th>
+                                            <th className="text-sm font-semibold text-dark-grey whitespace-nowrap p-3 text-left bg-light-grey">Actions</th>
+                                        </tr>
+                                        {
+                                            couponCodes?.map((couponCode, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.code}</td>
+                                                        <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.discount}%</td>
+                                                        <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.events.map(event => event.title).join(', ')}</td>
+                                                        <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{moment(couponCode.validUntil).utc().format('MMM Do, YYYY')} at {moment(couponCode.validUntil).utc().format('h:mm a')}</td>
+                                                        <td className="p-3 text-sm border-r-[1px] border-dark-grey/10">{couponCode.maxUsage}</td>
+                                                        <td className="p-3 text-sm border-r-[1px] border-dark-grey/10 flex flex-row gap-1">
+                                                            <Button
+                                                                minBtn
+                                                                disabled={isDeletingCouponCode && couponCode.id === selectedCouponCode?.id}
+                                                                className="!bg-failed !text-white disabled:pointer-events-none disabled:opacity-50"
+                                                                onClick={() => {
+                                                                    setSelectedCouponCode(couponCode);
+                                                                    handleDeleteCouponCode(couponCode.id);
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table> :
+                                <div>
+                                    <p>No coupon codes available</p>
+                                </div>
+                        }
                     </div>
                 </div>
             </div>
