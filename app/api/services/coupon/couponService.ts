@@ -7,7 +7,7 @@ export async function createCouponCode(data: CouponCodeRequest) {
   const { code, discount, maxUsage, validUntil, eventId } = data;
 
   // check if the fields are provided
-  if (!code || !discount || !validUntil) {
+  if (!code || !discount || !validUntil || !eventId) {
     return {
       error: ApplicationError.MissingRequiredParameters.Text,
       errorCode: ApplicationError.MissingRequiredParameters.Code,
@@ -45,29 +45,36 @@ export async function createCouponCode(data: CouponCodeRequest) {
     }
   }
 
-  // declare the verified eventId
-  let verifiedEventId: string | undefined;
-
-  // if the eventId is provided, check if the event exists
-  if (eventId) {
-    const event = await prisma.events.findFirst({
-      where: {
-        eventId,
+  // check if the event exists
+  const event = await prisma.events.findFirst({
+    where: {
+      eventId,
+    },
+    include: {
+      tickets: {
+        select: {
+          price: true,
+        },
       },
-    });
+    },
+  });
 
-    if (!event) {
-      return {
-        error: ApplicationError.EventWithIdNotFound.Text,
-        errorCode: ApplicationError.EventWithIdNotFound.Code,
-        statusCode: StatusCodes.NotFound,
-      };
-    }
-
-    verifiedEventId = event.id;
+  if (!event) {
+    return {
+      error: ApplicationError.EventWithIdNotFound.Text,
+      errorCode: ApplicationError.EventWithIdNotFound.Code,
+      statusCode: StatusCodes.NotFound,
+    };
   }
 
-  // if we get here, it means we are creating a new coupon code for an event
+  // if all the tickets for the event are free, return an error
+  if (event.tickets.every((ticket) => Number(ticket.price) === 0)) {
+    return {
+      error: ApplicationError.CouponCannotBeAppliedToFreeEvent.Text,
+      errorCode: ApplicationError.CouponCannotBeAppliedToFreeEvent.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
 
   // check if the coupon code already exists
   const existingCouponCode = await prisma.couponCodes.findFirst({
@@ -91,10 +98,10 @@ export async function createCouponCode(data: CouponCodeRequest) {
       discount,
       maxUsage: maxUsage ?? 10,
       validUntil: new Date(validUntil),
-      events: verifiedEventId
+      events: event.id
         ? {
             connect: {
-              id: verifiedEventId,
+              id: event.id,
             },
           }
         : undefined,
