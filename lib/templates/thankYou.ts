@@ -151,7 +151,7 @@ a[x-apple-data-detectors] {
 	</v:roundrect></a>
 <![endif]--><!--[if !mso]><!-- -->
 <span class="msohide es-button-border" style="border-style:solid;border-color:#2CB543;background:#8133f1;border-width:0px;display:inline-block;border-radius:30px;width:auto;mso-hide:all">
-    <a href="https://ticketsdeck.netlify.app/events" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;display:inline-block;background:#8133f1;border-radius:30px;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;padding:10px 20px 10px 20px;mso-padding-alt:0;mso-border-alt:10px solid #8133F1">
+    <a href="https://events.ticketsdeck.com/events" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;display:inline-block;background:#8133f1;border-radius:30px;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;padding:10px 20px 10px 20px;mso-padding-alt:0;mso-border-alt:10px solid #8133F1">
         Explore Events
     </a>
 </span>
