@@ -1,7 +1,6 @@
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from "next/server";
 
 export async function fetchPayments() {
   const allPayments = await prisma.payments.findMany({
