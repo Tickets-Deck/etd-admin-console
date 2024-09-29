@@ -625,6 +625,14 @@ export class ApplicationError extends BaseApplicationError {
     Code: "PAYMENT_1001",
   };
 
+  /**
+   * The error message for ~ Payment with specified Payment Reference not found
+   */
+  static PaymentWithReferenceNotFound: IApplicationError = {
+    Text: "Payment with specified Payment Reference not found",
+    Code: "PAYMENT_1002",
+  };
+
   //#endregion
 
   //#region Password Errors
