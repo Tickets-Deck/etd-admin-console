@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
     const operation = await fetchUsers(req);
 
     // If operation fails, return the error
-    if (operation.error) {
-      return customNextResponseError(operation);
-    }
+    // if (operation.error) {
+    //   return customNextResponseError(operation);
+    // }
 
     // Return the response
     return NextResponse.json(operation.data, { status: StatusCodes.Success });
