@@ -12,4 +12,5 @@ export type EventResponse = {
   numberOfTicketOrders: number;
   numberOfCouponCodes: number;
   numberOfTickets: number;
+  publisher: string;
 };

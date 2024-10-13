@@ -3,8 +3,44 @@ import { compileThankYouTemplate, sendMail, sendMassMail } from "@/lib/mail";
 import { IEventEmail } from "@/app/models/IEmail";
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
+import { NextRequest } from "next/server";
 
-export async function fetchAllEvents() {
+export async function fetchAllEvents(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the eventId from the search params
+  const eventId = searchParams.get("eventId");
+
+  if (eventId) {
+    const event = await prisma.events.findFirst({
+      where: {
+        OR: [{ id: eventId }, { eventId }],
+      },
+      include: {
+        tickets: true,
+        ticketOrders: true,
+        couponCodes: true,
+        transactionFee: true,
+        user: {
+            select: {
+                firstName: true,
+                lastName: true,
+            }
+        }
+      },
+    });
+    if (!event) {
+      return {
+        error: ApplicationError.EventWithIdNotFound.Text,
+        errorCode: ApplicationError.EventWithIdNotFound.Code,
+        statusCode: StatusCodes.BadRequest,
+      };
+    }
+
+    return { data: event };
+  }
+
   const allEvents = await prisma.events.findMany({
     select: {
       id: true,
@@ -36,6 +72,12 @@ export async function fetchAllEvents() {
           quantity: true,
         },
       },
+      user: {
+          select: {
+              firstName: true,
+              lastName: true,
+          }
+      },
       _count: {
         select: {
           tickets: true,
@@ -62,6 +104,7 @@ export async function fetchAllEvents() {
           curr.payments.reduce((acc, curr) => acc + Number(curr.amountPaid), 0),
         0
       ),
+      publisher:  event.user.firstName + " " + event.user.lastName,
       numberOfTicketOrders: event.ticketOrders.reduce(
         (acc, curr) => acc + curr.quantity,
         0
