@@ -1,3 +1,7 @@
+type UserMetrics = {
+    events: number;
+}
+
 export type User = {
   id: string;
   email: string;
@@ -33,4 +37,5 @@ export type User = {
   totalRevenue: string;
   createdAt: string;
   updatedAt: string;
+  _count: UserMetrics
 };

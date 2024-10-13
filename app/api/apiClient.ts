@@ -87,8 +87,8 @@ export function useDeleteTransactionFee() {
 }
 
 export function useFetchEvents() {
-  async function fetchEvents(userId: string) {
-    return API.get(`${ApiRoutes.Events}?userId=${userId}`);
+  async function fetchEvents(userId: string, eventId?: string) {
+    return API.get(`${ApiRoutes.Events}?userId=${userId}&eventId=${eventId ?? ''}`);
   }
 
   return fetchEvents;

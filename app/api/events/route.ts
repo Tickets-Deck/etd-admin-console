@@ -4,12 +4,6 @@ import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { customNextResponseError } from "../utils/customNextResponseError";
 import { authenticateAdminUser } from "../services/reusable-services/adminUserAuthenticator";
-import { TransactionFeeRequest } from "@/app/models/ITransactionFee";
-import {
-  createTransactionFee,
-  deleteTransactionFee,
-  fetchAllTransactionFees,
-} from "../services/transaction-fee/feeService";
 import {
   fetchAllEvents,
   sendEmailToAllTicketOrderContacts,
@@ -30,12 +24,12 @@ export async function GET(req: NextRequest) {
 
   try {
     // Fetch all events
-    const operation = await fetchAllEvents();
+    const operation = await fetchAllEvents(req);
 
     // If operation fails, return the error
-    // if (operation.error) {
-    //   return customNextResponseError(operation);
-    // }
+    if (operation.error) {
+      return customNextResponseError(operation);
+    }
 
     // Return the response
     return NextResponse.json(operation.data, { status: StatusCodes.Success });
