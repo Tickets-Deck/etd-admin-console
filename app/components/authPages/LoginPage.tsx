@@ -2,13 +2,14 @@
 import { ReactElement, FunctionComponent, useState, useEffect, FormEvent } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { StorageKeys } from "@/app/constants/storageKeys";
 import { EmailIcon, EyeIcon, PasswordIcon } from "../SVGs/SVGicons";
 import { useOnline } from "@/app/hooks/useOnline";
-import { ButtonLoader, ComponentLoader } from "../Loader/ComponentLoader";
+import { ButtonLoader } from "../Loader/ComponentLoader";
+import { isTokenExpired } from "@/utils/getTokenExpirationStatus";
 
 interface LoginProps {
 
@@ -37,11 +38,11 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         e.preventDefault();
 
         // if user is login
-        if(!isUserOnline) {
+        if (!isUserOnline) {
             setMessage("It appears that you are offline. Please check your network connectivity, and try again.")
             return;
         }
-        
+
         // Unset message
         setMessage('');
 
@@ -67,23 +68,14 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         const userInformation = {
             email,
             password,
-            redirect: false,
+            redirect: false
         };
-
-        // console.log(userInformation);
 
         await signIn('credentials', { ...userInformation })
             .then(async (response) => {
                 // console.log("login response: ", response);
 
                 // If we have an error
-                if (response?.error && !response.error.includes("prisma" || "database server")) {
-                    setMessage(response.error);
-                    // Close loader
-                    setIsLoading(false);
-                    return;
-                }
-
                 if (response && response.status == StatusCodes.Unauthorized) {
                     // Close loader
                     setIsLoading(false);
@@ -103,8 +95,16 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
     useEffect(() => {
         if (status === "authenticated" && session) {
+            console.log("🚀 ~ useEffect ~ session:", session)
+            console.log("🚀 ~ useEffect ~ status:", status)
+            console.log("🚀 ~ useEffect ~ isTokenExpired(session.user.token as string):", isTokenExpired(session.user.token as string))
+
             // Refresh the page so we get the new session state to the server side
             router.refresh();
+
+            if (isTokenExpired(session.user.token as string)) {
+                return;
+            }
             // Fetch user information
             // handleFetchUserInformation();
             // Clear newly created user email
@@ -112,7 +112,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             // Push to homepage 
             router.push(ApplicationRoutes.Home);
         }
-    }, [status]);
+    }, [status, session]);
 
     return (
         <div className="min-h-[100vh] p-5 pt-20 pb-20 grid place-items-center bg-gray-800 md:(py-12 flex)">
