@@ -6,6 +6,8 @@ import { CouponCodeRequest } from "@/app/models/ICoupon";
 import { ComboBox, DatePicker, IComboBox, IComboBoxOption, IComboBoxStyles } from '@fluentui/react';
 import moment from "moment";
 import Button from "../ui/button";
+import useOuterClick from "@/app/hooks/useOuterClick";
+import { useEventContext } from "@/app/contexts/EventContext";
 
 interface CouponCodeCreationModalProps {
     visibility: boolean
@@ -14,13 +16,19 @@ interface CouponCodeCreationModalProps {
     couponCodeDetails: CouponCodeRequest | undefined
     handleCreateCouponCode: () => Promise<void>
     isCreatingCouponCode: boolean
+    selectedEvent: string | undefined
+    setSelectedEvent: Dispatch<SetStateAction<string | undefined>>
 }
 
 const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> = (
     { visibility, setVisibility, couponCodeDetails, setCouponCodeDetails,
-        handleCreateCouponCode, isCreatingCouponCode }): ReactElement => {
+        handleCreateCouponCode, isCreatingCouponCode, selectedEvent, setSelectedEvent }): ReactElement => {
+
+    const { handleFetchEvents, events } = useEventContext();
+    const [eventsDropdownIsVisible, setEventsDropdownIsVisible] = useState(false);
 
     const [startTime, setStartTime] = useState<string>();
+
     /**
      * 
      * @returns generateTimeOptions: Generates an array of time options in 30-minute intervals.
@@ -92,6 +100,10 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
         }
     }, [visibility])
 
+    const eventsDropdownRef = useRef(null);
+
+    useOuterClick(eventsDropdownRef, () => setEventsDropdownIsVisible(false));
+
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className="w-full max-w-full md:w-[400px] md:max-w-[400px] p-6 rounded-2xl bg-light-grey text-container-grey">
@@ -123,7 +135,7 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
                         onChange={(e) => {
                             const value = e.target.value;
                             console.log({ value });
-                            
+
                             // check if the value contains any special characters or lowercase letters
                             if (!/^[0-9A-Z]{1,6}$/.test(value)) {
                                 toast.error("Code should only contain uppercase letters, numbers, and be up to 6 characters long");
@@ -162,14 +174,41 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
                             setCouponCodeDetails({ ...couponCodeDetails as CouponCodeRequest, maxUsage: parseInt(e.target.value) })
                         }}
                     />
-                    <input
-                        className="w-full p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg outline-none"
-                        type="text"
-                        placeholder="Event Code"
-                        name={"eventId"}
-                        value={couponCodeDetails?.eventId || ""}
-                        onChange={(e) => setCouponCodeDetails({ ...couponCodeDetails as CouponCodeRequest, eventId: e.target.value })}
-                    />
+                    <div className="relative" ref={eventsDropdownRef}>
+                        <input
+                            className="w-full p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg outline-none"
+                            type="text"
+                            placeholder="Event Code"
+                            name={"eventId"}
+                            onClick={() => setEventsDropdownIsVisible(true)}
+                            value={selectedEvent ?? ""}
+                            onChange={(e) => {
+                                if (e.target.value.length <= 3) return;
+                                handleFetchEvents(1, e.target.value);
+                            }}
+                        />
+                        {
+                            eventsDropdownIsVisible &&
+                            <div className="absolute z-20 w-full bg-white flex flex-col max-h-48 overflow-y-auto rounded-lg">
+                                {
+                                    events?.map((event, index) => (
+                                        <span
+                                            onClick={() => {
+                                                setCouponCodeDetails({ ...couponCodeDetails as CouponCodeRequest, eventId: event.id })
+                                                setSelectedEvent(event.title)
+                                                handleFetchEvents()
+                                                setEventsDropdownIsVisible(false);
+                                            }}
+                                            key={index}
+                                            className="p-2 px-4 hover:bg-gray-300 cursor-pointer">
+                                            {event.title}
+                                        </span>
+                                    ))
+                                }
+                            </div>
+                        }
+                    </div>
+
                     <div className="flex flex-col gap-1">
                         <label htmlFor="expiryDate" className="text-xs text-dark-grey/60">Expiry Date & Time</label>
                         <div className="flex flex-row gap-2">
