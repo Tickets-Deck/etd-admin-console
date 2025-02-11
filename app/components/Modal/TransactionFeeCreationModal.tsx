@@ -1,8 +1,11 @@
-import { FunctionComponent, ReactElement, Dispatch, SetStateAction, useEffect } from "react";
+import { FunctionComponent, ReactElement, Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import ModalWrapper from "./ModalWrapper";
 import { CloseIcon } from "../SVGs/SVGicons";
 import { toast } from "sonner";
 import { TransactionFeeRequest } from "@/app/models/ITransactionFee";
+import { useEventContext } from "@/app/contexts/EventContext";
+import useOuterClick from "@/app/hooks/useOuterClick";
+import Button from "../ui/button";
 
 interface TransactionFeeCreationModalProps {
     visibility: boolean
@@ -11,11 +14,16 @@ interface TransactionFeeCreationModalProps {
     feeDetails: TransactionFeeRequest | undefined
     handleCreateTransactionFee: () => Promise<void>
     isCreatingTransactionFee: boolean
+    selectedEvent: string | undefined
+    setSelectedEvent: Dispatch<SetStateAction<string | undefined>>
 }
 
 const TransactionFeeCreationModal: FunctionComponent<TransactionFeeCreationModalProps> = (
-    { visibility, setVisibility, feeDetails, setFeeDetails,
+    { visibility, setVisibility, feeDetails, setFeeDetails, selectedEvent, setSelectedEvent,
         handleCreateTransactionFee, isCreatingTransactionFee }): ReactElement => {
+
+    const { handleFetchEvents, events } = useEventContext();
+    const [eventsDropdownIsVisible, setEventsDropdownIsVisible] = useState(false);
 
     const validateFields = () => {
         if (!feeDetails?.percentage) {
@@ -29,8 +37,13 @@ const TransactionFeeCreationModal: FunctionComponent<TransactionFeeCreationModal
     useEffect(() => {
         if (visibility) {
             setFeeDetails({ percentage: 0, flatFee: 0, eventId: "" })
+            setSelectedEvent(undefined)
         }
     }, [visibility])
+
+    const eventsDropdownRef = useRef(null);
+
+    useOuterClick(eventsDropdownRef, () => setEventsDropdownIsVisible(false));
 
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
@@ -77,15 +90,43 @@ const TransactionFeeCreationModal: FunctionComponent<TransactionFeeCreationModal
                         type="text"
                         placeholder="Flat fee"
                         name={"flatFee"}
+                        value={feeDetails?.flatFee}
                         onChange={(e) => setFeeDetails({ ...feeDetails as TransactionFeeRequest, flatFee: parseInt(e.target.value) })}
                     />
-                    <input
-                        className="w-full p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg outline-none"
-                        type="text"
-                        placeholder="Event Code"
-                        name={"eventId"}
-                        onChange={(e) => setFeeDetails({ ...feeDetails as TransactionFeeRequest, eventId: e.target.value })}
-                    />
+                    <div className="relative" ref={eventsDropdownRef}>
+                        <input
+                            className="w-full p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg outline-none"
+                            type="text"
+                            placeholder="Select Event"
+                            name={"eventId"}
+                            onClick={() => setEventsDropdownIsVisible(true)}
+                            value={selectedEvent ?? ""}
+                            onChange={(e) => {
+                                if (e.target.value.length <= 3) return;
+                                handleFetchEvents(1, e.target.value);
+                            }}
+                        />
+                        {
+                            eventsDropdownIsVisible &&
+                            <div className="absolute z-20 w-full bg-white flex flex-col max-h-48 overflow-y-auto rounded-lg">
+                                {
+                                    events?.map((event, index) => (
+                                        <span
+                                            onClick={() => {
+                                                setFeeDetails({ ...feeDetails as TransactionFeeRequest, eventId: event.id });
+                                                setSelectedEvent(event.title)
+                                                handleFetchEvents()
+                                                setEventsDropdownIsVisible(false);
+                                            }}
+                                            key={index}
+                                            className="p-2 px-4 hover:bg-gray-300 cursor-pointer">
+                                            {event.title}
+                                        </span>
+                                    ))
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div className="flex justify-end mt-4 gap-2">
@@ -94,15 +135,16 @@ const TransactionFeeCreationModal: FunctionComponent<TransactionFeeCreationModal
                         onClick={() => setVisibility(false)}>
                         Cancel
                     </button>
-                    <button
+                    <Button
+                        isLoading={isCreatingTransactionFee}
                         disabled={!feeDetails?.percentage || isCreatingTransactionFee}
-                        className="text-sm bg-white text-black/80 px-4 py-2 rounded-full hover:bg-white/80 transition-all"
+                        className="text-sm px-4 py-2 rounded-full relative transition-all"
                         onClick={() => {
                             if (!validateFields()) return;
                             handleCreateTransactionFee();
                         }}>
                         Create
-                    </button>
+                    </Button>
                 </div>
             </div>
         </ModalWrapper>
