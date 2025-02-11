@@ -9,6 +9,7 @@ import OfflineAlert from "../components/Modal/OfflineAlert";
 import { useOnline } from "../hooks/useOnline";
 import { ApplicationContext, ApplicationContextData } from "../contexts/ApplicationContext";
 import { Toaster } from "sonner";
+import { isTokenExpired } from "@/utils/getTokenExpirationStatus";
 
 interface LayoutProps {
     children?: ReactNode;
@@ -22,7 +23,8 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     const { offlineStatusModalVisibility, hideOfflineStatusModalVisibility } = useContext(ApplicationContext) as ApplicationContextData;
 
     useEffect(() => {
-        if (!session) {
+        if (!session || isTokenExpired(session.user.token as string)) {
+            console.log("Token expired. Redirecting to sign in page...");
             push(ApplicationRoutes.SignIn);
         }
     }, [session])
