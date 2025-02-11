@@ -10,6 +10,7 @@ import Kpi from "./Kpi";
 import RecentTransactions from "./RecentTransactions";
 import { IRecentTransactions } from "../models/IRecentTransactions";
 import { FullPageLoader } from "../components/Loader/ComponentLoader";
+import { useApplicationContext } from "../contexts/ApplicationContext";
 
 type HomepageProps = {
 }
@@ -18,6 +19,25 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
 
     const fetchDashboardInfo = useFetchDashboardInfo();
     const fetchRecentTransactions = useFetchRecentTransactions();
+    const { adminUser, handleFetchAdminUser } = useApplicationContext();
+
+    // console.log("🚀 ~ adminUser:", adminUser);
+    // useEffect(() => {
+    //     console.log("Setting cookies...");
+    //     setAuthCookies("test_token_123", "user_456");
+
+    //     setTimeout(() => {
+    //       console.log("Getting cookies...");
+    //       console.log("Token:", getAuthToken());
+    //       console.log("User ID:", getUserId());
+
+    //       console.log("Removing cookies...");
+    //       removeAuthCookies();
+
+    //       console.log("Token after removal:", getAuthToken());
+    //       console.log("User ID after removal:", getUserId());
+    //     }, 2000);
+    //   }, []);
 
     const { data: session, status } = useSession();
     const user = session?.user;
@@ -26,12 +46,25 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
     const [dashboardInfo, setDashboardInfo] = useState<DashboardInfoResponse>();
     const [recentTransactions, setRecentTransactions] = useState<IRecentTransactions[]>();
 
+    useEffect(() => {
+        if (!user) return;
+        handleFetchAdminUser();
+    }, [user])
+
+    // Store token in cookies
+    // useEffect(() => {
+    //     if (user?.token && user?.id) {
+    //         console.log("🚀 ~ useEffect ~ user:", user)
+    //         setAuthCookies(user.token, user.id);
+    //     }
+    // }, [session, user]);
+
     async function handleFetchDashboardInfo() {
 
         // Start loader
         setIsLoading(true);
 
-        await fetchDashboardInfo(user?.id as string)
+        await fetchDashboardInfo(user?.token as string)
             .then((response) => {
                 setDashboardInfo(response.data);
             })
@@ -44,7 +77,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
     };
 
     async function handleFetchRecentTransactions() {
-        await fetchRecentTransactions(user?.id as string)
+        await fetchRecentTransactions(user?.token as string)
             .then((response) => {
                 // console.log(response.data);
                 setRecentTransactions(response.data);
