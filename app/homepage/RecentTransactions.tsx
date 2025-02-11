@@ -7,10 +7,10 @@ import moment from 'moment';
 import Button from '../components/ui/button';
 import { IRecentTransactions } from '../models/IRecentTransactions';
 import { useFetchTicketOrder } from '../api/apiClient';
-import { FetchSingleTicketOrderRequest, SingleTicketOrder } from '../models/ITicketOrder';
+import { SingleTicketOrder } from '../models/ITicketOrder';
 import { useSession } from 'next-auth/react';
 import { catchError } from '../constants/catchError';
-import OrderDetails from '../components/Modal/OrderDetails';
+import OrderDetailsModal from '../components/Modal/OrderDetailsModal';
 
 type Props = {
     recentTransactions: IRecentTransactions[]
@@ -31,14 +31,9 @@ const RecentTransactions = ({ recentTransactions }: Props) => {
         // show loader
         setIsFetchingSingleTicketOrder(true);
 
-        // construct data
-        const data: FetchSingleTicketOrderRequest = {
-            userId: user?.id as string,
-            orderId: selectedTicketOrderId as string
-        }
-
-        await fetchTicketOrder(data)
+        await fetchTicketOrder(selectedTicketOrderId as string, user?.token as string)
             .then((response) => {
+                console.log("🚀 ~ .then ~ response:", response)
                 setTicketOrder(response.data);
                 setOrderDetailsVisibility(true);
             })
@@ -61,7 +56,7 @@ const RecentTransactions = ({ recentTransactions }: Props) => {
         <>
             {
                 ticketOrder &&
-                <OrderDetails
+                <OrderDetailsModal
                     visibility={orderDetailsVisibility}
                     setVisibility={setOrderDetailsVisibility}
                     ticketOrder={ticketOrder}
@@ -104,8 +99,10 @@ const RecentTransactions = ({ recentTransactions }: Props) => {
                                             </span>
                                         </div>
                                         <Button
+                                            isLoading={isFetchingSingleTicketOrder && selectedTicketOrderId === transaction.orderId}
+                                            disabled={isFetchingSingleTicketOrder} // disable all buttons while fetching
                                             onClick={() => setSelectedTicketOrderId(transaction.orderId)}
-                                            className="!p-2 !px-5 !bg-gray-100 !text-dark-grey/80 text-sm rounded-full hover:opacity-55">
+                                            className={`!p-2 !px-5 !bg-gray-100 !text-dark-grey/80 text-sm rounded-full hover:opacity-55 ${isFetchingSingleTicketOrder ? 'pointer-events-none opacity-60' : ''}`}>
                                             View
                                         </Button>
                                     </div>
