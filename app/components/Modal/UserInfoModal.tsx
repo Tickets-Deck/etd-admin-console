@@ -70,7 +70,7 @@ const UserInfoModal: FunctionComponent<UserInfoModalProps> = (
                             Tickets bought
                         </p>
                         <p className="text-sm">
-                            {user?.ticketsBought}
+                            {user?.ticketsBought ?? 0}
                         </p>
                     </div>
                     <div className="flex flex-row w-full justify-between">
@@ -78,7 +78,7 @@ const UserInfoModal: FunctionComponent<UserInfoModalProps> = (
                             Tickets sold
                         </p>
                         <p className="text-sm">
-                            {user?.ticketsSold}
+                            {user?.ticketsSold ?? 0}
                         </p>
                     </div>
                     {/* <div className="flex flex-row w-full justify-between">
