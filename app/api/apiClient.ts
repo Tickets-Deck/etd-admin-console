@@ -1,127 +1,233 @@
 import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
-import { FetchSingleTicketOrderRequest } from "../models/ITicketOrder";
 import { TransactionFeeRequest } from "../models/ITransactionFee";
 import { CouponCodeRequest } from "../models/ICoupon";
 import { IEventEmail } from "../models/IEmail";
+import { LoginUserRequest, LoginUserResponse } from "../models/ILoginUser";
+import { EventVisibility } from "@prisma/client";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_LIVE,
+  baseURL: ApiRoutes.BASE_URL,
 });
 
+export const getApiConfig = (token: string) => {
+  // This is the function that will be used to get the CSRF token
+  //   const userToken = getAuthToken();
+
+  console.log("🚀 ~ getApiConfig ~ token:", token);
+  //   console.log("🚀 ~ getApiConfig ~ userToken:", userToken);
+
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`, // all endpoints require a token
+      "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+    },
+  };
+};
+
+export function useRequestCredentialToken() {
+  async function requestToken() {
+    return API.get(ApiRoutes.RequestCredentialToken, getApiConfig(""));
+  }
+
+  return requestToken;
+}
+
+export function useLoginUser() {
+  // Request token
+  const requestToken = useRequestCredentialToken();
+
+  async function loginUser(data: LoginUserRequest) {
+    const token = await requestToken();
+
+    return API.post<LoginUserResponse>(
+      ApiRoutes.AdminUserLogin,
+      data,
+      getApiConfig(token.data.token)
+    );
+  }
+
+  return loginUser;
+}
+
+export function useFetchAdminUser() {
+  // Request token
+  //   const requestToken = useRequestCredentialToken();
+  async function fetchAdminUser(id: string, token: string) {
+    return API.get(ApiRoutes.FetchAdminUser(id), getApiConfig(token));
+  }
+
+  return fetchAdminUser;
+}
+
 export function useFetchDashboardInfo() {
-  async function fetchDashboardInfo(userId: string) {
-    return API.get(`${ApiRoutes.FetchDashboardKpis}?userId=${userId}`);
+  async function fetchDashboardInfo(token: string) {
+    return API.get(ApiRoutes.FetchDashboardKpis, getApiConfig(token));
   }
 
   return fetchDashboardInfo;
 }
 
 export function useFetchRecentTransactions() {
-  async function fetchRecentTransactions(userId: string) {
-    return API.get(`${ApiRoutes.FetchRecentTransactions}?userId=${userId}`);
+  async function fetchRecentTransactions(token: string) {
+    return API.get(ApiRoutes.FetchRecentTransactions, getApiConfig(token));
   }
 
   return fetchRecentTransactions;
 }
 
-export function useFetchPayments() {
-  async function fetchPayments(userId: string) {
-    return API.get(`${ApiRoutes.Payments}?userId=${userId}`);
-  }
-
-  return fetchPayments;
-}
-
-export function useFetchUsers() {
-  async function fetchUsers(userId: string) {
-    return API.get(`${ApiRoutes.Users}?userId=${userId}`);
-  }
-
-  return fetchUsers;
-}
-
-export function useFetchTicketOrders() {
-  async function fetchTicketOrders(userId: string) {
-    return API.get(`${ApiRoutes.TicketOrders}?userId=${userId}`);
-  }
-
-  return fetchTicketOrders;
-}
-
 export function useFetchTicketOrder() {
-  async function fetchTicketOrder({
-    userId,
-    orderId,
-  }: FetchSingleTicketOrderRequest) {
+  async function fetchTicketOrder(tickerOrderId: string, token: string) {
     return API.get(
-      `${ApiRoutes.TicketOrders}?userId=${userId}&orderId=${orderId}`
+      ApiRoutes.FetchSingleTicketOrder(tickerOrderId),
+      getApiConfig(token)
     );
   }
 
   return fetchTicketOrder;
 }
 
-export function useFetchTransactionFees() {
-    async function fetchTransactionFees(userId: string) {
-        return API.get(`${ApiRoutes.TransactionFees}?userId=${userId}`);
-    }
-    
-    return fetchTransactionFees;
+export function useFetchTicketOrders() {
+  async function fetchTicketOrders(
+    token: string,
+    page?: string,
+    limit?: string,
+    searchQuery?: string,
+    paymentStatus?: string
+  ) {
+    return API.get(
+      `${ApiRoutes.TicketOrders}?page=${page ?? 1}&limit=${
+        limit ?? 10
+      }&searchQuery=${searchQuery ?? ""}${
+        paymentStatus ? `&paymentStatus=${paymentStatus ?? ""}` : ""
+      }`,
+      getApiConfig(token)
+    );
+  }
+
+  return fetchTicketOrders;
 }
 
-export function useCreateTransactionFee() {
-    async function createTransactionFee(userId: string, data: TransactionFeeRequest) {
-        return API.post(`${ApiRoutes.TransactionFees}?userId=${userId}`, data);
-    }
-    
-    return createTransactionFee;
+export function useFetchPayments() {
+  async function fetchPayments(
+    token: string,
+    page?: string,
+    limit?: string,
+    searchQuery?: string,
+    paymentStatus?: string
+  ) {
+    return API.get(
+      `${ApiRoutes.Payments}?page=${page ?? 1}&limit=${
+        limit ?? 10
+      }&searchQuery=${searchQuery ?? ""}${
+        paymentStatus ? `&paymentStatus=${paymentStatus ?? ""}` : ""
+      }`,
+      getApiConfig(token)
+    );
+  }
+
+  return fetchPayments;
 }
 
-export function useDeleteTransactionFee() {
-    async function deleteTransactionFee(userId: string, transactionFeeId: string) {
-        return API.delete(`${ApiRoutes.TransactionFees}?userId=${userId}&transactionFeeId=${transactionFeeId}`);
-    }
-    
-    return deleteTransactionFee;
+export function useFetchUsers() {
+  async function fetchUsers(
+    token: string,
+    page?: string,
+    limit?: string,
+    searchQuery?: string,
+    customerType?: "customers" | "organizers"
+  ) {
+    return API.get(
+      `${ApiRoutes.Users}?page=${page ?? 1}&limit=${limit ?? 10}&searchQuery=${
+        searchQuery ?? ""
+      }${customerType ? `&customerType=${customerType ?? ""}` : ""}`,
+      getApiConfig(token)
+    );
+  }
+
+  return fetchUsers;
 }
 
 export function useFetchEvents() {
-  async function fetchEvents(userId: string, eventId?: string) {
-    return API.get(`${ApiRoutes.Events}?userId=${userId}&eventId=${eventId ?? ''}`);
+  async function fetchEvents(
+    token: string,
+    page?: string,
+    limit?: string,
+    searchQuery?: string,
+    eventVisibility?: EventVisibility
+  ) {
+    return API.get(
+      `${ApiRoutes.Events}?page=${page ?? 1}&limit=${limit ?? 10}&searchQuery=${
+        searchQuery ?? ""
+      }${eventVisibility ? `&visibility=${eventVisibility ?? ""}` : ""}`,
+      getApiConfig(token)
+    );
   }
 
   return fetchEvents;
 }
 
+export function useFetchTransactionFees() {
+  async function fetchTransactionFees(token: string) {
+    return API.get(ApiRoutes.TransactionFees, getApiConfig(token));
+  }
+
+  return fetchTransactionFees;
+}
+
+export function useCreateTransactionFee() {
+  async function createTransactionFee(
+    token: string,
+    data: TransactionFeeRequest
+  ) {
+    return API.post(ApiRoutes.TransactionFees, data, getApiConfig(token));
+  }
+
+  return createTransactionFee;
+}
+
+export function useDeleteTransactionFee() {
+  async function deleteTransactionFee(token: string, transactionFeeId: string) {
+    return API.delete(
+      `${ApiRoutes.TransactionFees}?transactionFeeId=${transactionFeeId}`,
+      getApiConfig(token)
+    );
+  }
+
+  return deleteTransactionFee;
+}
+
 export function useCreateCouponCode() {
-  async function createCouponCode(userId: string, data: CouponCodeRequest) {
-    return API.post(`${ApiRoutes.CouponCodes}?userId=${userId}`, data);
+  async function createCouponCode(token: string, data: CouponCodeRequest) {
+    return API.post(ApiRoutes.CouponCodes, data, getApiConfig(token));
   }
 
   return createCouponCode;
 }
 
 export function useFetchCouponCodes() {
-    async function fetchCouponCodes(userId: string) {
-        return API.get(`${ApiRoutes.CouponCodes}?userId=${userId}`);
-    }
-    
-    return fetchCouponCodes;
+  async function fetchCouponCodes(token: string) {
+    return API.get(ApiRoutes.CouponCodes, getApiConfig(token));
+  }
+
+  return fetchCouponCodes;
 }
 
 export function useDeleteCouponCode() {
-    async function deleteCouponCode(userId: string, couponCodeId: string) {
-        return API.delete(`${ApiRoutes.CouponCodes}?userId=${userId}&couponId=${couponCodeId}`);
-    }
-    
-    return deleteCouponCode;
+  async function deleteCouponCode(token: string, couponCodeId: string) {
+    return API.delete(`${ApiRoutes.CouponCodes}/${couponCodeId}`, getApiConfig(token));
+  }
+
+  return deleteCouponCode;
 }
 
 export function useSendEmailToAllTicketOrderContacts() {
-    async function sendEmailToAllTicketOrderContacts(userId: string, emailInfo: IEventEmail) {
-        return API.post(`${ApiRoutes.Events}?userId=${userId}`, emailInfo);
-    }
-    
-    return sendEmailToAllTicketOrderContacts;
+  async function sendEmailToAllTicketOrderContacts(
+    userId: string,
+    emailInfo: IEventEmail
+  ) {
+    return API.post(`${ApiRoutes.Events}?userId=${userId}`, emailInfo);
+  }
+
+  return sendEmailToAllTicketOrderContacts;
 }
