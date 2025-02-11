@@ -1,4 +1,3 @@
-import { OrderStatus } from "../enums/IOrderStatus";
 import { PaymentServiceProvider } from "../enums/IPaymentServiceProvider";
 import { PaymentStatus } from "../enums/IPaymentStatus";
 
@@ -17,19 +16,6 @@ interface SingleTicketOrderUser {
   email: string;
 }
 
-interface SingleTicketOrderOrderedTicketTicket {
-  name: string;
-}
-
-interface SingleTicketOrderOrderedTicket {
-  ticket: SingleTicketOrderOrderedTicketTicket;
-}
-
-export interface FetchSingleTicketOrderRequest {
-  userId: string;
-  orderId: string;
-}
-
 export interface TicketOrderResponse {
   id: string;
   contactEmail: string;
@@ -44,20 +30,12 @@ export interface TicketOrderResponse {
 
 export interface SingleTicketOrder {
   id: string;
-  userId: string;
-  event: TicketOrderEvent;
-  quantity: number;
-  totalPrice: string;
+  orderId: string;
+  eventName: string;
+  tickets: string[];
+  user: SingleTicketOrderUser | null;
   contactEmail: string;
   contactFirstName: string | null;
   contactLastName: string | null;
   contactNumber: string | null;
-  orderId: string;
-  orderStatus: OrderStatus;
-  paymentStatus: PaymentStatus;
-  paymentId: string;
-  createdAt: string;
-  updatedAt: string;
-  tickets: SingleTicketOrderOrderedTicket[];
-  user: SingleTicketOrderUser | null;
 }
