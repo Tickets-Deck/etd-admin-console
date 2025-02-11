@@ -1,7 +1,6 @@
 "use client"
 import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
-import React, { ReactElement, FunctionComponent, useState, useEffect } from "react";
+import React, { ReactElement, FunctionComponent } from "react";
 import { Icons } from "../components/ui/icons";
 import CustomImage from "../components/ui/image";
 import images from "@/public/images";
@@ -9,6 +8,7 @@ import Link from "next/link";
 import { ApplicationRoutes } from "../constants/applicationRoutes";
 import { motion } from "framer-motion";
 import MobileNavbarOverlay from "../components/Navbar/MobileNavbar";
+import { useApplicationContext } from "../contexts/ApplicationContext";
 
 interface NavbarProps {
     session: Session | null
@@ -16,13 +16,7 @@ interface NavbarProps {
 
 const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
     const [navbarIsVisible, setNavbarIsVisible] = React.useState(false);
-    const [userInfo, setUserInfo] = useState<Session>();
-    const { status, data: session } = useSession();
-
-    useEffect(() => {
-        if (!session) return;
-        setUserInfo(session);
-    }, [session, status])
+    const { adminUser } = useApplicationContext();
 
     return (
         <motion.nav
@@ -46,7 +40,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                         {/* <CustomImage src={images.avatar} alt="User" /> */}
                         <Icons.User className="w-5 h-5" />
                     </span>
-                    <p className="font-medium text-sm text-dark-grey">{userInfo?.user.username ?? userInfo?.user.name}</p>
+                    <p className="font-medium text-sm text-dark-grey">{adminUser?.username ?? adminUser?.firstName}</p>
                     {/* <span><Icons.Dropdown /></span> */}
                 </Link>
             </div>
