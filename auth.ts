@@ -1,19 +1,25 @@
-import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-// import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
 import { ApplicationRoutes } from "./app/constants/applicationRoutes";
 import { StorageKeys } from "./app/constants/storageKeys";
 import { prisma } from "./lib/prisma";
+import { ApiRoutes } from "./app/api/apiRoutes";
+import { useRequestCredentialToken } from "./app/api/apiClient";
+import { ApplicationError } from "./app/constants/applicationError";
+
+// Request token
+const requestToken = useRequestCredentialToken();
+
+const API_BASE_URL = ApiRoutes.BASE_URL;
 
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    // Set max age to 24 hours
-    maxAge: 24 * 60 * 60,
-    // Update jwt every 23 hours
-    updateAge: 20 * 60 * 60,
+    // Set max age to 50 minutes
+    maxAge: 50 * 60,  // 3000 seconds (50 minutes)
+    // Update JWT every 35 minutes
+    updateAge: 35 * 60, // 2100 seconds (35 minutes)
   },
   providers: [
     CredentialsProvider({
@@ -33,39 +39,36 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please provide email and password");
         }
 
-        // Check if user exists in database checking each user's email if it matches the email provided
-        const user = await prisma.adminUsers.findUnique({
-          where: {
-            email: credentials.email,
+        const token = await requestToken();
+
+        // Call your API to login user
+        const res = await fetch(`${API_BASE_URL}${ApiRoutes.AdminUserLogin}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.data.token || ""}`,
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+            credentials: "include", // allow cookies to be sent
           },
+          body: JSON.stringify(credentials),
         });
 
-        if (!user) {
-          // Throw an error to display an error message
-          throw new Error(
-            "User account not found. Please sign up, or check your email and try again."
-          );
+        // Get the response
+        const loginResponse = await res.json();
+
+        if (
+          loginResponse?.errorCode === ApplicationError.InvalidCredentials.Code
+        ) {
+          throw new Error(ApplicationError.InvalidCredentials.Text);
         }
 
-        // Check that password matches
-        const isPasswordValid = await compare(
-          credentials.password,
-          user.password
-        );
+        if (!res.ok) throw new Error("Invalid credentials");
 
-        if (!isPasswordValid) {
-          // Throw an error to display an error message
-          throw new Error(
-            "Incorrect password. Please check your password and try again."
-          );
+        if (loginResponse?.token) {
+          // Return login response object to be stored in JWT
+          return { ...loginResponse };
         }
-
-        // Return user object to be stored in JWT
-        return {
-          id: user.id + "",
-          email: user.email,
-          name: user.firstName + " " + user.lastName,
-        };
+        return null;
       },
     }),
     GoogleProvider({
@@ -116,7 +119,7 @@ export const authOptions: NextAuthOptions = {
             firstName: profile?.name?.split(" ")[0] as string,
             lastName: profile?.name?.split(" ")[1] as string,
             password: "google-signup-no-password",
-            profilePhoto: profile?.picture as string, 
+            profilePhoto: profile?.picture as string,
             emailVerified: true,
           },
         });
@@ -140,74 +143,41 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage JWTs here
     jwt: async ({ token, user, trigger, session }) => {
-      // console.log("JWT Callback", { token, user, trigger, session });
+      //   console.log("JWT Callback", { token, user, trigger, session });
 
-      // Check prisma for user with email gotten in token
-      const exisitingUser = await prisma.adminUsers.findUnique({
-        where: {
-          email: token.email as string,
-        },
-      });
-
-      // If user exists, return user id in JWT so it will be accessible in the session
-      if (exisitingUser) {
+      // If user is defined, it's a fresh login, so update the token
+      if (user) {
         return {
           ...token,
-          id: exisitingUser.id,
-        };
-      } else if (user) {
-        const u = user as unknown as any;
-
-        // Return user info so it will be accessible in the session
-        return {
-          ...token,
-          id: u.id,
+          id: user.id,
+          accessToken: user.token,
         };
       }
 
-      if (trigger === "update") {
-        return {
-          ...token,
-          ...session.user,
-          name: session.user.name,
-          email: session.user.email,
-        };
-      }
-
-      return token;
+      // Return user info so it will be accessible in the session
+      return {
+        ...token,
+        id: token.id,
+        token: token.accessToken,
+      };
     },
     // Create and manage sessions here
     session: async ({ session, token }) => {
-    //   console.log("Session Callback", { session, token });
-
-      // Fetch user details from database
-      const user = await prisma.adminUsers.findUnique({
-        where: {
-          id: token.id as string,
-        },
-      });
-    //   console.log("🚀 ~ session: ~ user:", user);
+      console.log("Session Callback", { session, token });
 
       return {
         ...session,
         user: {
           ...session.user,
           id: token.id,
-          accessToken: token.accessToken,
-          idToken: token.idToken,
-          image: user?.profilePhoto,
-          name: user?.firstName + " " + user?.lastName,
-          email: user?.email,
-          //   image: token.image as string ?? user?.profilePhoto,
-          //   name: token.name,
-          //   email: token.email,
+          token: token.token,
         },
       };
     },
   },
   events: {
     async signIn(message) {
-    //   console.log("Sign In Event", { message });
+      //   console.log("Sign In Event", { message });
     },
     async signOut(message) {
       // Delete the session cookie
