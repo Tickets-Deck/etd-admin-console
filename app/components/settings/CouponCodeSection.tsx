@@ -27,13 +27,14 @@ const CouponCodeSection: FunctionComponent<CouponCodeSectionProps> = ({ session 
     const [isDeletingCouponCode, setIsDeletingCouponCode] = useState(false);
     const [couponCodeCreationModalVisibility, setCouponCodeCreationModalVisibility] = useState(false);
     const [selectedCouponCode, setSelectedCouponCode] = useState<CouponCodeResponse>();
+    const [selectedEvent, setSelectedEvent] = useState<string>()
 
     const [couponCodes, setCouponCodes] = useState<CouponCodeResponse[]>();
 
     const [couponCodeReq, setCouponCodeReq] = useState<CouponCodeRequest>();
 
     const handleFetchCouponCodes = async () => {
-        await fetchCouponCodes(user?.id as string)
+        await fetchCouponCodes(user?.token as string)
             .then((response) => {
                 setCouponCodes(response.data);
             })
@@ -50,7 +51,7 @@ const CouponCodeSection: FunctionComponent<CouponCodeSectionProps> = ({ session 
         setIsCreatingCouponCode(true);
 
         // create transaction fee
-        await createCouponCode(user?.id as string, couponCodeReq as CouponCodeRequest)
+        await createCouponCode(user?.token as string, couponCodeReq as CouponCodeRequest)
             .then(async (response) => {
                 // fetch the coupon codes
                 await handleFetchCouponCodes();
@@ -96,7 +97,7 @@ const CouponCodeSection: FunctionComponent<CouponCodeSectionProps> = ({ session 
         setIsDeletingCouponCode(true);
 
         // delete transaction fee
-        await deleteCouponCode(user?.id as string, couponCodeId)
+        await deleteCouponCode(user?.token as string, couponCodeId)
             .then(async (response) => {
                 // fetch the coupon codes
                 await handleFetchCouponCodes();
@@ -129,6 +130,8 @@ const CouponCodeSection: FunctionComponent<CouponCodeSectionProps> = ({ session 
                 setCouponCodeDetails={setCouponCodeReq}
                 handleCreateCouponCode={handleCreateCouponCode}
                 isCreatingCouponCode={isCreatingCouponCode}
+                selectedEvent={selectedEvent}
+                setSelectedEvent={setSelectedEvent}
             />
             <div className='w-full'>
                 <div className="flex flex-col items-start w-full mb-4 mt-6 md:flex-row md:justify-between">
