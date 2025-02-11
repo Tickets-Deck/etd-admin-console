@@ -12,8 +12,16 @@ declare module "next-auth" {
             image: string | null | undefined;
             username: string | null | undefined;
             idToken: string | null | undefined;
-            accessToken: string | null | undefined;
+            token: string | null | undefined;
         }
+    }
+    interface User {
+            id: string | null | undefined;
+            name: string | null | undefined;
+            email: string | null | undefined;
+            image: string | null | undefined;
+            username: string | null | undefined;
+            token: string | null | undefined;
     }
 
     interface Profile {
