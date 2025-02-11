@@ -61,7 +61,7 @@ const EventInfoModal: FunctionComponent<EventInfoModalProps> = (
                             Email verified
                         </p>
                         <p className="text-sm">
-                            {'emailVerified' ? 'Yes' : 'No'}
+                            {true ? 'Yes' : 'No'}
                         </p>
                     </div>
                     <div className="flex flex-row w-full justify-between">
