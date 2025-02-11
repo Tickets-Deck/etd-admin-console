@@ -11,7 +11,7 @@ export async function fetchUsers(req: NextRequest) {
       include: {
         _count: {
             select: {
-                events:  true,
+                events: true,
             }
         }
       }
