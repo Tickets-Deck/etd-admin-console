@@ -1,6 +1,5 @@
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
-import { TicketOrderResponse } from "@/app/models/ITicketOrder";
 import { prisma } from "@/lib/prisma";
 
 export async function fetchAllTicketOrders() {
