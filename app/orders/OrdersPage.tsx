@@ -5,13 +5,15 @@ import Table from "../components/ui/table";
 import { useFetchTicketOrder, useFetchTicketOrders } from "../api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "../constants/catchError";
-import { FetchSingleTicketOrderRequest, SingleTicketOrder, TicketOrderResponse } from "../models/ITicketOrder";
+import { SingleTicketOrder, TicketOrderResponse } from "../models/ITicketOrder";
 import { NairaPrice } from "../constants/priceFormatter";
 import moment from "moment";
 import { serializer } from "../constants/serializer";
-import OrderDetails from "../components/Modal/OrderDetails";
+import OrderDetailsModal from "../components/Modal/OrderDetailsModal";
 import { PaymentStatus } from "../enums/IPaymentStatus";
 import Input from "../components/ui/input";
+import { Pagination } from "../components/ui/pagination";
+import { PaginationMetaProps } from "../types/pagination";
 
 interface OrdersPageProps {
 
@@ -28,6 +30,8 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = (): ReactElement => {
     const [isLoading, setIsLoading] = useState(true);
     const [isFetchingSingleTicketOrder, setIsFetchingSingleTicketOrder] = useState(false);
     const [ticketOrders, setTicketOrders] = useState<TicketOrderResponse[]>();
+    const [ticketOrdersMeta, setTicketOrdersMeta] = useState<PaginationMetaProps>();
+    const [[page, limit], setPaginationMeta] = useState([1, 10]);
     const [ticketOrder, setTicketOrder] = useState<SingleTicketOrder | null>(null);
     const [selectedTicketOrderId, setSelectedTicketOrderId] = useState<string>();
     const [filteredOrders, setFilteredOrders] = useState<TicketOrderResponse[]>();
@@ -36,12 +40,17 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = (): ReactElement => {
 
     const [orderDetailsVisibility, setOrderDetailsVisibility] = useState(false);
 
+    async function handleFetchTicketOrders(page: number = 1, _searchQuery?: string) {
 
-    async function handleFetchTicketOrders() {
+        setPaginationMeta([page, limit]);
 
-        await fetchTicketOrders(user?.id as string)
+        // show loader
+        setIsLoading(true);
+
+        await fetchTicketOrders(user?.token as string, page.toString(), limit.toString(), _searchQuery ?? searchQuery ?? '', paymentTypeFilter)
             .then((response) => {
-                setTicketOrders(response.data);
+                setTicketOrders(response.data.ticketOrders);
+                setTicketOrdersMeta(response.data.meta);
             })
             .catch((error) => {
                 catchError(error);
@@ -55,13 +64,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = (): ReactElement => {
         // show loader
         setIsFetchingSingleTicketOrder(true);
 
-        // construct data
-        const data: FetchSingleTicketOrderRequest = {
-            userId: user?.id as string,
-            orderId: selectedTicketOrderId as string
-        }
-
-        await fetchTicketOrder(data)
+        await fetchTicketOrder(selectedTicketOrderId as string, user?.token as string)
             .then((response) => {
                 setTicketOrder(response.data);
                 setOrderDetailsVisibility(true);
@@ -76,75 +79,29 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = (): ReactElement => {
     };
 
     useEffect(() => {
-        if (!user) return;
-        handleFetchTicketOrders();
         if (selectedTicketOrderId) {
             handleFetchSingleTicketOrder();
         }
-    }, [user, selectedTicketOrderId]);
+    }, [selectedTicketOrderId]);
+
+    // Hook to filter ticket orders based on search query
+    useEffect(() => {
+        if (searchQuery && searchQuery.length > 3) {
+            handleFetchTicketOrders(1, searchQuery);
+        } else if (searchQuery === '') {
+            handleFetchTicketOrders();
+        }
+    }, [searchQuery])
 
     useEffect(() => {
-        if (searchQuery && ticketOrders) {
-            let _filterResults = [];
-
-            _filterResults = ticketOrders?.filter(order =>
-                [order.contactEmail.toLowerCase() ?? '', order.event.title.toLowerCase()]
-                    .some(
-                        anyPropValue => anyPropValue.startsWith(searchQuery.toLowerCase()) ||
-                            anyPropValue.includes(searchQuery.toLowerCase())
-                    )).filter(payment => paymentTypeFilter ? payment.paymentStatus == paymentTypeFilter : payment) ??
-                [];
-
-            setFilteredOrders(_filterResults);
-        } else {
-            setFilteredOrders(undefined);
-        }
-    }, [searchQuery]);
-
-    useEffect(() => {
-        if (!paymentTypeFilter) return;
-
-        const filterPayments = (status: PaymentStatus) => {
-            return (filteredOrders || ticketOrders)?.filter(payment =>
-                payment.paymentStatus === status &&
-                (searchQuery ?
-                    payment.contactEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    payment.event.title.toLowerCase().includes(searchQuery.toLowerCase())
-                    : true)
-            );
-        };
-
-        let _filterResults = filteredOrders;
-
-        switch (paymentTypeFilter) {
-            case PaymentStatus.Paid:
-                _filterResults = filterPayments(PaymentStatus.Paid);
-                break;
-            case PaymentStatus.Pending:
-                _filterResults = filterPayments(PaymentStatus.Pending);
-                break;
-            case PaymentStatus.Failed:
-                _filterResults = filterPayments(PaymentStatus.Failed);
-                break;
-
-            default:
-                _filterResults = ticketOrders?.filter(order =>
-                (searchQuery ?
-                    order.contactEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    order.event.title.toLowerCase().includes(searchQuery.toLowerCase())
-                    : true)
-                );;
-                break;
-        }
-
-        setFilteredOrders(_filterResults);
+        handleFetchTicketOrders(1);
     }, [paymentTypeFilter])
 
     return (
         <main className={styles.mainPageStyle}>
             {
                 ticketOrder &&
-                <OrderDetails
+                <OrderDetailsModal
                     visibility={orderDetailsVisibility}
                     setVisibility={setOrderDetailsVisibility}
                     ticketOrder={ticketOrder}
@@ -152,17 +109,19 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = (): ReactElement => {
             }
             <div className="w-full flex flex-col gap-4 bg-transparent p-0">
                 <div className="flex flex-col items-start md:flex-row md:justify-between">
-                    <h3 className="text-2xl text-dark-grey font-medium">Ticket Orders</h3>
+                    <div>
+                        <h3 className="text-2xl text-dark-grey font-medium">Ticket Orders</h3>
+                        {ticketOrdersMeta && <p>Results: {ticketOrdersMeta?.total}</p>}
+                    </div>
 
 
                     <div className='flex flex-row items-start gap-3'>
                         <select
                             onChange={(e) => {
-                                setFilteredOrders(undefined);
-                                setPaymentTypeFilter(e.target.value)
+                                setPaymentTypeFilter(e.target.value);
                             }}
                             className='text-dark-grey p-2 px-3 rounded-lg'>
-                            <option className='p-2 bg-white' value={undefined}>All orders</option>
+                            <option className='p-2 bg-white' value={""}>All orders</option>
                             <option className='p-2 bg-white' value={PaymentStatus.Pending}>Pending</option>
                             <option className='p-2 bg-white' value={PaymentStatus.Paid}>Paid</option>
                             <option className='p-2 bg-white' value={PaymentStatus.Failed}>Failed</option>
@@ -173,19 +132,15 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = (): ReactElement => {
                                 placeholder="Search for an event"
                                 className="p-2 px-3 rounded-md mb-1"
                                 onChange={(e) => {
-                                    if (e.target.value == '') {
-                                        setFilteredOrders(undefined);
-                                        setPaymentTypeFilter(undefined);
-                                    }
                                     setSearchQuery(e.target.value)
                                 }}
                             />
-                            <p className="text-sm text-dark-grey/50">Search using user email, or event name</p>
+                            <p className="text-sm text-dark-grey/50">Search using user email, order Id or event name</p>
                         </div>
                     </div>
                 </div>
 
-                <div className='rounded-2xl overflow-x-auto'>
+                <div className='rounded-2xl overflow-x-auto bg-white'>
                     <Table
                         tableHeaderStyle="text-white"
                         tableHeaders={[
@@ -230,6 +185,15 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = (): ReactElement => {
                         }
                         isLoading={isLoading}
                     ></Table>
+                    <div className="flex justify-end mt-4 p-5">
+                        {
+                            ticketOrdersMeta && ticketOrdersMeta.totalPages > 1 &&
+                            <Pagination
+                                meta={{ ...ticketOrdersMeta, page }}
+                                onPageChange={(page) => handleFetchTicketOrders(page)}
+                            />
+                        }
+                    </div>
                 </div>
             </div>
         </main>
