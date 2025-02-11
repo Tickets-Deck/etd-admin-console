@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import Button from '../components/ui/button';
 import { PaymentStatus } from '../enums/IPaymentStatus';
 import Input from '../components/ui/input';
+import { PaginationMetaProps } from '../types/pagination';
+import { Pagination } from '../components/ui/pagination';
 
 type Props = {}
 
@@ -28,15 +30,23 @@ const PaymentPage = (props: Props) => {
     const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
     const [selectedTrxref, setSelectedTrxref] = useState<string>();
     const [payments, setPayments] = useState<Payment[]>();
-    const [filteredPayments, setFilteredPayments] = useState<Payment[]>();
     const [searchQuery, setSearchQuery] = useState<string>();
     const [paymentTypeFilter, setPaymentTypeFilter] = useState<string | PaymentStatus>();
+    const [[page, limit], setPaginationMeta] = useState([1, 10]);
+    const [paymentsMeta, setPaymentsMeta] = useState<PaginationMetaProps>();
 
-    async function handleFetchPayments() {
+    async function handleFetchPayments(page: number = 1, _searchQuery?: string) {
 
-        await fetchPayments(user?.id as string)
+        setPaginationMeta([page, limit]);
+
+        // show loader
+        setIsLoading(true);
+
+        await fetchPayments(user?.token as string, page.toString(), limit.toString(), _searchQuery ?? searchQuery ?? '', paymentTypeFilter)
             .then((response) => {
-                setPayments(response.data);
+                console.log("🚀 ~ .then ~ response:", response)
+                setPayments(response.data.payments);
+                setPaymentsMeta(response.data.meta);
             })
             .catch((error) => {
                 catchError(error);
@@ -78,82 +88,92 @@ const PaymentPage = (props: Props) => {
         }
     }
 
-    useEffect(() => {
-        if (!user) return;
-        handleFetchPayments();
-    }, [user]);
+    // useEffect(() => {
+    //     if (searchQuery && payments) {
+    //         let _filterResults = [];
+
+    //         _filterResults = payments?.filter(payment =>
+    //             [payment.user?.email.toLowerCase() ?? '', payment.ticketOrder.event.title.toLowerCase()]
+    //                 .some(
+    //                     anyPropValue => anyPropValue.startsWith(searchQuery.toLowerCase()) ||
+    //                         anyPropValue.includes(searchQuery.toLowerCase())
+    //                 )).filter(payment => paymentTypeFilter ? payment.paymentStatus == paymentTypeFilter : payment) ??
+    //             [];
+
+    //         setFilteredPayments(_filterResults);
+    //     } else {
+    //         setFilteredPayments(undefined);
+    //     }
+    // }, [searchQuery]);
+    // Hook to filter ticket orders based on search query
 
     useEffect(() => {
-        if (searchQuery && payments) {
-            let _filterResults = [];
-
-            _filterResults = payments?.filter(payment =>
-                [payment.user?.email.toLowerCase() ?? '', payment.ticketOrder.event.title.toLowerCase()]
-                    .some(
-                        anyPropValue => anyPropValue.startsWith(searchQuery.toLowerCase()) ||
-                            anyPropValue.includes(searchQuery.toLowerCase())
-                    )).filter(payment => paymentTypeFilter ? payment.paymentStatus == paymentTypeFilter : payment) ??
-                [];
-
-            setFilteredPayments(_filterResults);
-        } else {
-            setFilteredPayments(undefined);
+        if (searchQuery && searchQuery.length > 3) {
+            handleFetchPayments(1, searchQuery);
+        } else if (searchQuery === '') {
+            handleFetchPayments();
         }
-    }, [searchQuery]);
+    }, [searchQuery])
+
+    // useEffect(() => {
+    //     if (!paymentTypeFilter) return;
+
+    //     const filterPayments = (status: PaymentStatus) => {
+    //         return (filteredPayments || payments)?.filter(payment =>
+    //             payment.paymentStatus === status &&
+    //             (searchQuery ?
+    //                 payment.user?.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //                 payment.ticketOrder.event.title.toLowerCase().includes(searchQuery.toLowerCase())
+    //                 : true)
+    //         );
+    //     };
+
+    //     let _filterResults = filteredPayments;
+
+    //     switch (paymentTypeFilter) {
+    //         case PaymentStatus.Paid:
+    //             _filterResults = filterPayments(PaymentStatus.Paid);
+    //             break;
+    //         case PaymentStatus.Pending:
+    //             _filterResults = filterPayments(PaymentStatus.Pending);
+    //             break;
+    //         case PaymentStatus.Failed:
+    //             _filterResults = filterPayments(PaymentStatus.Failed);
+    //             break;
+
+    //         default:
+    //             _filterResults = payments?.filter(payment =>
+    //             (searchQuery ?
+    //                 payment.user?.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //                 payment.ticketOrder.event.title.toLowerCase().includes(searchQuery.toLowerCase())
+    //                 : true)
+    //             );;
+    //             break;
+    //     }
+
+    //     setFilteredPayments(_filterResults);
+    // }, [paymentTypeFilter])
 
     useEffect(() => {
-        if (!paymentTypeFilter) return;
-
-        const filterPayments = (status: PaymentStatus) => {
-            return (filteredPayments || payments)?.filter(payment =>
-                payment.paymentStatus === status &&
-                (searchQuery ?
-                    payment.user?.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    payment.ticketOrder.event.title.toLowerCase().includes(searchQuery.toLowerCase())
-                    : true)
-            );
-        };
-
-        let _filterResults = filteredPayments;
-
-        switch (paymentTypeFilter) {
-            case PaymentStatus.Paid:
-                _filterResults = filterPayments(PaymentStatus.Paid);
-                break;
-            case PaymentStatus.Pending:
-                _filterResults = filterPayments(PaymentStatus.Pending);
-                break;
-            case PaymentStatus.Failed:
-                _filterResults = filterPayments(PaymentStatus.Failed);
-                break;
-
-            default:
-                _filterResults = payments?.filter(payment =>
-                (searchQuery ?
-                    payment.user?.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    payment.ticketOrder.event.title.toLowerCase().includes(searchQuery.toLowerCase())
-                    : true)
-                );;
-                break;
-        }
-
-        setFilteredPayments(_filterResults);
+        handleFetchPayments(1);
     }, [paymentTypeFilter])
 
     return (
         <main className={styles.mainPageStyle}>
             <div className="w-full flex flex-col gap-4 bg-transparent p-0">
                 <div className="flex flex-row items-start justify-between w-full mb-4 mt-6">
-                    <h3 className="text-2xl text-dark-grey font-medium">Payments</h3>
+                    <div>
+                        <h3 className="text-2xl text-dark-grey font-medium">Payments</h3>
+                        {paymentsMeta && <p>Results: {paymentsMeta?.total}</p>}
+                    </div>
 
                     <div className='flex flex-row items-start gap-3'>
                         <select
                             onChange={(e) => {
-                                setFilteredPayments(undefined);
                                 setPaymentTypeFilter(e.target.value)
                             }}
                             className='text-dark-grey p-2 px-3 rounded-lg'>
-                            <option className='p-2 bg-white' value={undefined}>All payments</option>
+                            <option className='p-2 bg-white' value={""}>All payments</option>
                             <option className='p-2 bg-white' value={PaymentStatus.Pending}>Pending</option>
                             <option className='p-2 bg-white' value={PaymentStatus.Paid}>Paid</option>
                             <option className='p-2 bg-white' value={PaymentStatus.Failed}>Failed</option>
@@ -164,10 +184,6 @@ const PaymentPage = (props: Props) => {
                                 placeholder="Search for an event"
                                 className="p-2 px-3 rounded-md mb-1"
                                 onChange={(e) => {
-                                    if (e.target.value == '') {
-                                        setFilteredPayments(undefined);
-                                        setPaymentTypeFilter(undefined);
-                                    }
                                     setSearchQuery(e.target.value)
                                 }}
                             />
@@ -176,7 +192,7 @@ const PaymentPage = (props: Props) => {
                     </div>
                 </div>
 
-                <div className='rounded-2xl overflow-x-auto'>
+                <div className='rounded-2xl overflow-x-auto bg-white'>
                     <Table
                         tableHeaderStyle="text-white"
                         tableHeaders={[
@@ -193,7 +209,7 @@ const PaymentPage = (props: Props) => {
                             <>Action</>,
                         ]}
                         tableRowsData={
-                            (filteredPayments || payments)?.map((payment, index) => [
+                            payments?.map((payment, index) => [
                                 <div className="flex items-center text-[#666666]">
                                     {/* <input type="checkbox" className="border border-mcNiff-primary" /> */}
                                     <span className="ml-2 text-sm w-48 text-wrap">{payment.ticketOrder.contactEmail}</span>
@@ -227,6 +243,15 @@ const PaymentPage = (props: Props) => {
                         }
                         isLoading={isLoading}
                     ></Table>
+                    <div className="flex justify-end mt-4 p-5">
+                        {
+                            paymentsMeta && paymentsMeta.totalPages > 1 &&
+                            <Pagination
+                                meta={{ ...paymentsMeta, page }}
+                                onPageChange={(page) => handleFetchPayments(page)}
+                            />
+                        }
+                    </div>
                 </div>
             </div>
         </main>
