@@ -47,14 +47,14 @@ export function Pagination({ meta, onPageChange }: PaginationProps) {
                 onClick={() => onPageChange(page - 1)}
                 disabled={page === 1}
                 aria-label="Previous page"
-                className="h-10 w-10 !p-0 rounded-full grid place-items-center bg-gray-300"
+                className="h-10 w-10 !p-0 rounded-full grid place-items-center !bg-gray-300"
             >
                 <Icons.ChevronLeft />
             </Button>
             {generatePageNumbers().map((pageNumber, index) => (
                 <React.Fragment key={index}>
                     {pageNumber === "ellipsis" ? (
-                        <Button disabled className="h-10 w-10 !p-0 rounded-full grid place-items-center bg-gray-300">
+                        <Button disabled className="h-10 w-10 !p-0 rounded-full grid place-items-center !bg-gray-300">
                             <Icons.MoreHorizontal className="h-4 w-4" />
                         </Button>
                     ) : (
@@ -73,7 +73,7 @@ export function Pagination({ meta, onPageChange }: PaginationProps) {
                 onClick={() => onPageChange(page + 1)}
                 disabled={page === totalPages}
                 aria-label="Next page"
-                className="h-10 w-10 !p-0 rounded-full grid place-items-center bg-gray-300"
+                className="h-10 w-10 !p-0 rounded-full grid place-items-center !bg-gray-300"
             >
                 <Icons.ChevronRight className="h-4 w-4" />
             </Button>
