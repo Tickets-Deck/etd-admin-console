@@ -25,6 +25,7 @@ const TransactionFeeSection: FunctionComponent<TransactionFeeSectionProps> = ({ 
     const [isDeletingTransactionFee, setIsDeletingTransactionFee] = useState(false);
     const [transactionFeeCreationModalVisibility, setTransactionFeeCreationModalVisibility] = useState(false);
     const [selectedTransactionFee, setSelectedTransactionFee] = useState<TransactionFeeResponse>();
+    const [selectedEvent, setSelectedEvent] = useState<string>()
 
     const [transactionFees, setTransactionFees] = useState<TransactionFeeResponse[]>();
     const [generalFee, setGeneralFee] = useState<TransactionFeeResponse>();
@@ -32,8 +33,9 @@ const TransactionFeeSection: FunctionComponent<TransactionFeeSectionProps> = ({ 
     const [transactionFeeReq, setTransactionFeeReq] = useState<TransactionFeeRequest>();
 
     const handleFetchTransactionFees = async () => {
-        await fetchTransactionFees(user?.id as string)
+        await fetchTransactionFees(user?.token as string)
             .then((response) => {
+                console.log("🚀 ~ .then ~ response:", response)
                 setTransactionFees(response.data);
             })
             .catch((error) => {
@@ -46,22 +48,24 @@ const TransactionFeeSection: FunctionComponent<TransactionFeeSectionProps> = ({ 
 
     const handleCreateTransactionFee = async () => {
         // show loader
-        setIsFetchingFees(true);
+        setIsCreatingTransactionFee(true);
 
         // create transaction fee
-        await createTransactionFee(user?.id as string, transactionFeeReq as TransactionFeeRequest)
+        await createTransactionFee(user?.token as string, transactionFeeReq as TransactionFeeRequest)
             .then(async (response) => {
+                setTransactionFeeReq(undefined);
+                setSelectedEvent(undefined);
+
                 // fetch transaction fees
                 await handleFetchTransactionFees();
-
-                // hide loader
-                setIsCreatingTransactionFee(false);
 
                 // close modal
                 setTransactionFeeCreationModalVisibility(false);
             })
             .catch((error) => {
                 console.log("🚀 ~ .catch ~ error", error)
+            })
+            .finally(() => {
                 // hide loader
                 setIsCreatingTransactionFee(false);
             })
@@ -73,7 +77,7 @@ const TransactionFeeSection: FunctionComponent<TransactionFeeSectionProps> = ({ 
         setIsDeletingTransactionFee(true);
 
         // delete transaction fee
-        await deleteTransactionFee(user?.id as string, transactionFeeId)
+        await deleteTransactionFee(user?.token as string, transactionFeeId)
             .then(async (response) => {
                 // fetch transaction fees
                 await handleFetchTransactionFees();
@@ -107,6 +111,8 @@ const TransactionFeeSection: FunctionComponent<TransactionFeeSectionProps> = ({ 
                 setFeeDetails={setTransactionFeeReq}
                 handleCreateTransactionFee={handleCreateTransactionFee}
                 isCreatingTransactionFee={isCreatingTransactionFee}
+                selectedEvent={selectedEvent}
+                setSelectedEvent={setSelectedEvent}
             />
 
             <div className='w-full'>
