@@ -11,7 +11,8 @@ export class ApiRoutes {
   /**
    * The test base url for the application
    */
-  static BASE_URL_TEST: string = "https://consoletest.events.ticketsdeck.com/";
+  static BASE_URL_TEST: string = "http://13.60.99.219:3050/";
+//   static BASE_URL_TEST: string = "https://consoletest.events.ticketsdeck.com/";
 
   /**
    * The live base url for the application
