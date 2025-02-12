@@ -69,6 +69,11 @@ export class ApiRoutes {
   static Payments: string = "admin/payments";
 
   /**
+   * The route to Verify Payments endpoint
+   */
+  static VerifyPayment: (transactionReference: string) => string = (transactionReference: string) => `payments/verify/${transactionReference}`;
+
+  /**
    * The route to Users endpoint
    */
   static Users: string = "admin/users";
