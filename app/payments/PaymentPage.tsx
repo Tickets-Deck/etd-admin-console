@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { styles } from '../styles/styles'
 import Table from '../components/ui/table';
-import { useFetchPayments } from '../api/apiClient';
+import { useFetchPayments, useVerifyPayment } from '../api/apiClient';
 import { useSession } from "next-auth/react";
 import { catchError } from '../constants/catchError';
 import { Payment } from '../models/IPayment';
@@ -22,6 +22,7 @@ type Props = {}
 const PaymentPage = (props: Props) => {
 
     const fetchPayments = useFetchPayments();
+    const verifyPayment = useVerifyPayment();
 
     const { data: session, status } = useSession();
     const user = session?.user;
@@ -59,33 +60,30 @@ const PaymentPage = (props: Props) => {
     async function handleVerifyPayment(trxref: string) {
         setIsVerifyingPayment(true);
 
-        const response = await fetch(`/api/payments/verify?trxref=${trxref}`);
-        const data = await response.json();
-        console.log("Payment verification data", data);
-
-        if (data?.message == "Payment successfully processed." || data?.status == 'success') {
-            toast.success("Payment was successful.");
-            postVerifyPayment();
-            return;
-        }
-        if (data?.status == 'abandoned' || data?.status == 'ongoing' || data?.status == 'pending') {
-            toast.error("Payment still pending.");
-            postVerifyPayment();
-            return;
-        }
-        if (data?.status == 'failed') {
-            toast.error("Payment failed.");
-            postVerifyPayment();
-            return;
-        }
-
-        toast.error("Payment could not be verified.");
-        postVerifyPayment();
-
-        function postVerifyPayment() {
-            setIsVerifyingPayment(false);
-            handleFetchPayments();
-        }
+        await verifyPayment(user?.token as string, trxref)
+            .then((response) => {
+                toast.success("Payment was successful.");
+                console.log("Payment verification response", response);
+            })
+            .catch((error) => {
+                console.log("🚀 ~ handleVerifyPayment ~ error:", error)
+                const data = error?.response?.data;
+                if (data?.status == 'abandoned' || data?.status == 'ongoing' || data?.status == 'pending') {
+                    toast.error("Payment still pending.");
+                    catchError(error);
+                    return;
+                }
+                if (data?.status == 'failed') {
+                    toast.error("Payment failed.");
+                    catchError(error);
+                    return;
+                }
+                toast.error("Payment could not be verified.");
+            })
+            .finally(() => {
+                setIsVerifyingPayment(false);
+                handleFetchPayments();
+            });
     }
 
     // useEffect(() => {
