@@ -14,9 +14,6 @@ export const getApiConfig = (token: string) => {
   // This is the function that will be used to get the CSRF token
   //   const userToken = getAuthToken();
 
-  console.log("🚀 ~ getApiConfig ~ token:", token);
-  //   console.log("🚀 ~ getApiConfig ~ userToken:", userToken);
-
   return {
     headers: {
       Authorization: `Bearer ${token}`, // all endpoints require a token

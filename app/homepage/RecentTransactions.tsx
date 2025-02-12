@@ -33,7 +33,6 @@ const RecentTransactions = ({ recentTransactions }: Props) => {
 
         await fetchTicketOrder(selectedTicketOrderId as string, user?.token as string)
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response)
                 setTicketOrder(response.data);
                 setOrderDetailsVisibility(true);
             })

@@ -21,21 +21,11 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
     const fetchRecentTransactions = useFetchRecentTransactions();
     const { adminUser, handleFetchAdminUser } = useApplicationContext();
 
-    // console.log("🚀 ~ adminUser:", adminUser);
     // useEffect(() => {
-    //     console.log("Setting cookies...");
     //     setAuthCookies("test_token_123", "user_456");
 
     //     setTimeout(() => {
-    //       console.log("Getting cookies...");
-    //       console.log("Token:", getAuthToken());
-    //       console.log("User ID:", getUserId());
-
-    //       console.log("Removing cookies...");
     //       removeAuthCookies();
-
-    //       console.log("Token after removal:", getAuthToken());
-    //       console.log("User ID after removal:", getUserId());
     //     }, 2000);
     //   }, []);
 
@@ -54,7 +44,6 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
     // Store token in cookies
     // useEffect(() => {
     //     if (user?.token && user?.id) {
-    //         console.log("🚀 ~ useEffect ~ user:", user)
     //         setAuthCookies(user.token, user.id);
     //     }
     // }, [session, user]);
@@ -79,7 +68,6 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
     async function handleFetchRecentTransactions() {
         await fetchRecentTransactions(user?.token as string)
             .then((response) => {
-                // console.log(response.data);
                 setRecentTransactions(response.data);
             })
             .catch((error) => {

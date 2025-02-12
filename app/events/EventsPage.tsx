@@ -48,7 +48,6 @@ const EventsPage: FunctionComponent<EventsPageProps> = (): ReactElement => {
 
         await fetchEvents(user?.token as string, page.toString(), limit.toString(), _searchQuery ?? searchQuery ?? '')
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response)
                 setEvents(response.data.events);
                 setEventsMeta(response.data.meta);
             })
@@ -63,12 +62,10 @@ const EventsPage: FunctionComponent<EventsPageProps> = (): ReactElement => {
     const handleFetchSelectedEvent = async () => {
         await fetchEvents(user?.id as string, selectedEventId)
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response)
                 setSelectedEventInfo(response.data);
                 // setEventInfoVisibilityModal(true);
             })
             .catch((error) => {
-                // console.log("🚀 ~ .catch ~ error", error);
                 catchError(error);
             })
             .finally(() => {

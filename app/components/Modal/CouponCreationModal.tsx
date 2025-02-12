@@ -134,8 +134,6 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
                         value={couponCodeDetails?.code || ""}
                         onChange={(e) => {
                             const value = e.target.value;
-                            console.log({ value });
-
                             // check if the value contains any special characters or lowercase letters
                             if (!/^[0-9A-Z]{1,6}$/.test(value)) {
                                 toast.error("Code should only contain uppercase letters, numbers, and be up to 6 characters long");
@@ -153,7 +151,6 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
                         value={couponCodeDetails?.discount || ""}
                         onChange={(e) => {
                             const value = Number(e.target.value);
-                            console.log({ value });
                             if (isNaN(value)) return;
                             if (value < 0 || value > 99) return;
                             // onFormValueChange(e, setNameErrorMsg)
@@ -168,7 +165,6 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
                         value={couponCodeDetails?.maxUsage || ""}
                         onChange={(e) => {
                             const value = Number(e.target.value);
-                            console.log({ value });
                             if (isNaN(value)) return;
                             if (value < 0 || value > 99) return;
                             setCouponCodeDetails({ ...couponCodeDetails as CouponCodeRequest, maxUsage: parseInt(e.target.value) })
@@ -238,21 +234,16 @@ const CouponCodeCreationModal: FunctionComponent<CouponCodeCreationModalProps> =
                                         setCouponCodeDetails({ ...couponCodeDetails as CouponCodeRequest, validUntil: date as Date });
                                     }}
                                     onKeyDown={(e) => {
-                                        // console.log('Key down...');
-
                                         // If backward tab was pressed...
                                         if (e.shiftKey && e.key === 'Tab') {
-                                            // console.log("Backward tab pressed...");
                                         }
 
                                         // If forward was tab was pressed...
                                         if (e.key === 'Tab') {
-                                            // console.log("Forward tab pressed...");
                                             // If shit key was enabled...
                                             if (e.shiftKey)
                                                 // Exit to aviod backward tab
                                                 return;
-                                            // console.log('Got here...');
                                         }
                                     }}
                                     underlined={false}

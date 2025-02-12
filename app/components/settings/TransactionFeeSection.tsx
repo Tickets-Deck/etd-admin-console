@@ -35,7 +35,6 @@ const TransactionFeeSection: FunctionComponent<TransactionFeeSectionProps> = ({ 
     const handleFetchTransactionFees = async () => {
         await fetchTransactionFees(user?.token as string)
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response)
                 setTransactionFees(response.data);
             })
             .catch((error) => {
@@ -63,7 +62,6 @@ const TransactionFeeSection: FunctionComponent<TransactionFeeSectionProps> = ({ 
                 setTransactionFeeCreationModalVisibility(false);
             })
             .catch((error) => {
-                console.log("🚀 ~ .catch ~ error", error)
             })
             .finally(() => {
                 // hide loader

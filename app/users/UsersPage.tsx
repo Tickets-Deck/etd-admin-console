@@ -34,7 +34,6 @@ export const UsersPage = (props: Props) => {
                 setUsersMeta(response.data.meta);
             })
             .catch((error) => {
-                // console.log("🚀 ~ .catch ~ error", error)
             })
             .finally(() => {
                 setIsLoading(false);
@@ -106,8 +105,6 @@ export const UsersPage = (props: Props) => {
 
             <div className="bg-white text-dark-grey w-full rounded-xl p-0">
                 {/* <div className="flex flex-row items-center justify-between mb-5">
-                        console.log("🚀 ~ UsersPage ~ e.target.value:", e.target.value)
-                        console.log("🚀 ~ UsersPage ~ e.target.value:", e.target.value)
                     <h3 className="text-xl font-medium">All Users</h3>
                     <Button>
                         Filter

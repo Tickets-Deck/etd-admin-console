@@ -45,7 +45,6 @@ const PaymentPage = (props: Props) => {
 
         await fetchPayments(user?.token as string, page.toString(), limit.toString(), _searchQuery ?? searchQuery ?? '', paymentTypeFilter)
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response)
                 setPayments(response.data.payments);
                 setPaymentsMeta(response.data.meta);
             })
@@ -63,10 +62,8 @@ const PaymentPage = (props: Props) => {
         await verifyPayment(user?.token as string, trxref)
             .then((response) => {
                 toast.success("Payment was successful.");
-                console.log("Payment verification response", response);
             })
             .catch((error) => {
-                console.log("🚀 ~ handleVerifyPayment ~ error:", error)
                 const data = error?.response?.data;
                 if (data?.status == 'abandoned' || data?.status == 'ongoing' || data?.status == 'pending') {
                     toast.error("Payment still pending.");

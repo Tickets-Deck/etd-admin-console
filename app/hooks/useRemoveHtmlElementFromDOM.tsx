@@ -19,14 +19,11 @@ export default function useRemoveHtmlElementFromDOM(refObject: RefObject<HTMLDiv
 
         // If ref object is available on DOM and element is visibility... 
         if (visibilityState == false) {
-
-            // console.log('object detected');
             setTimeout(() => {
 
                 if (refObject.current) {
                     // Hide element -> Add the display property and set it's value to none...
                     refObject.current.style.display = 'none';
-                    // console.log('removed object from DOM');
                 }
             }, time ?? 1000);
         } else {
@@ -44,7 +41,6 @@ export default function useRemoveHtmlElementFromDOM(refObject: RefObject<HTMLDiv
                     default:
                         return refObject.current.style.display = 'contents';
                 }
-                // console.log('added object to DOM');
             }
         }
     }

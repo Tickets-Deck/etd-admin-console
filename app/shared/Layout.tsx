@@ -24,7 +24,6 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     useEffect(() => {
         if (!session || isTokenExpired(session.user.token as string)) {
-            console.log("Token expired. Redirecting to sign in page...");
             push(ApplicationRoutes.SignIn);
         }
     }, [session])

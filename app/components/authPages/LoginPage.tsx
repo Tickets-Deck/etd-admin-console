@@ -73,8 +73,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
         await signIn('credentials', { ...userInformation })
             .then(async (response) => {
-                // console.log("login response: ", response);
-
                 // If we have an error
                 if (response && response.status == StatusCodes.Unauthorized) {
                     // Close loader
@@ -82,10 +80,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                     setMessage("An error occurred while logging in. Please check your credentials and try again.");
                     return;
                 }
-                // console.log('Login successful');
             })
             .catch((error) => {
-                // console.log("Error logging in: ", error);
                 setMessage("An error occurred while logging in. Please try again.");
                 catchError(error);
                 // Close loader
@@ -95,10 +91,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
     useEffect(() => {
         if (status === "authenticated" && session) {
-            console.log("🚀 ~ useEffect ~ session:", session)
-            console.log("🚀 ~ useEffect ~ status:", status)
-            console.log("🚀 ~ useEffect ~ isTokenExpired(session.user.token as string):", isTokenExpired(session.user.token as string))
-
             // Refresh the page so we get the new session state to the server side
             router.refresh();
 

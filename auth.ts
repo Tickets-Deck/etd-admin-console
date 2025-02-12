@@ -86,8 +86,6 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ account, profile }) {
-      // console.log("Sign In Callback", { account, profile });
-
       if (account?.provider === "google") {
 
         // If user exists, return true to allow sign in
@@ -106,8 +104,6 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage JWTs here
     jwt: async ({ token, user, trigger, session }) => {
-      //   console.log("JWT Callback", { token, user, trigger, session });
-
       // If user is defined, it's a fresh login, so update the token
       if (user) {
         return {
@@ -126,8 +122,6 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage sessions here
     session: async ({ session, token }) => {
-      console.log("Session Callback", { session, token });
-
       return {
         ...session,
         user: {
@@ -140,7 +134,6 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signIn(message) {
-      //   console.log("Sign In Event", { message });
     },
     async signOut(message) {
       // Delete the session cookie
@@ -153,17 +146,12 @@ export const authOptions: NextAuthOptions = {
 
       // Delete the new user email from session storage
       sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
-
-      // console.log("Sign Out Event", { message });
     },
     // async createUser(message) {
-    //   console.log("Create User Event", { message });
     // },
     // async linkAccount(message) {
-    //   console.log("Link Account Event", { message });
     // },
     // async session(message) {
-    //   console.log("Session Event", { message });
     // },
   },
   pages: {

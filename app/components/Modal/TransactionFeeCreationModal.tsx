@@ -78,7 +78,6 @@ const TransactionFeeCreationModal: FunctionComponent<TransactionFeeCreationModal
                         value={feeDetails?.percentage || ""}
                         onChange={(e) => {
                             const value = Number(e.target.value);
-                            console.log({ value });
                             if (isNaN(value)) return;
                             if (value < 0 || value > 99) return;
                             // onFormValueChange(e, setNameErrorMsg)

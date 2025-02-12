@@ -53,7 +53,6 @@ const EventContextProvider: FunctionComponent<EventContextProviderProps> = ({ ch
 
         await fetchEvents(user?.token as string, page.toString(), limit.toString(), _searchQuery ?? searchQuery ?? '')
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response)
                 setEvents(response.data.events);
                 setEventsMeta(response.data.meta);
             })
