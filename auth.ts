@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { ApplicationRoutes } from "./app/constants/applicationRoutes";
 import { StorageKeys } from "./app/constants/storageKeys";
-import { prisma } from "./lib/prisma";
 import { ApiRoutes } from "./app/api/apiRoutes";
 import { useRequestCredentialToken } from "./app/api/apiClient";
 import { ApplicationError } from "./app/constants/applicationError";
@@ -90,53 +89,17 @@ export const authOptions: NextAuthOptions = {
       // console.log("Sign In Callback", { account, profile });
 
       if (account?.provider === "google") {
-        // Check if user exists in database checking each user's email if it matches the email provided
-        const user = await prisma.adminUsers.findUnique({
-          where: {
-            email: profile?.email,
-          },
-        });
 
         // If user exists, return true to allow sign in
-        if (user) {
-          // Update emailVerified to true
-          await prisma.adminUsers.update({
-            where: {
-              id: user.id,
-            },
-            data: {
-              emailVerified: true,
-            },
-          });
+        // if (user) {
+        //   return true; // Return true to allow sign in
+        // }
 
-          return true; // Return true to allow sign in
-        }
+        // If user does not exist, create user...
 
-        // If user does not exist, create user
-        await prisma.adminUsers.create({
-          data: {
-            email: profile?.email as string,
-            firstName: profile?.name?.split(" ")[0] as string,
-            lastName: profile?.name?.split(" ")[1] as string,
-            password: "google-signup-no-password",
-            profilePhoto: profile?.picture as string,
-            emailVerified: true,
-          },
-        });
-
-        // Send email to the subscriber
-        // await sendMail({
-        //   to: profile?.email as string,
-        //   name: "Account Created",
-        //   subject: "Welcome to Ticketsdeck",
-        //   body: compileAccountCreationTemplate(
-        //     `${profile?.name?.split(" ")[0]} ${profile?.name?.split(" ")[1]}`
-        //   ),
-        // });
-
-        return true; // Return true to allow sign in
+        return true;
       }
-      return true; // Return true to allow sign in
+      return true;
     },
     async redirect({ url, baseUrl }) {
       return process.env.NEXTAUTH_URL as string;
