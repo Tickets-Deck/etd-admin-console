@@ -129,6 +129,14 @@ export function useFetchPayments() {
   return fetchPayments;
 }
 
+export function useVerifyPayment() {
+  async function verifyPayment(token: string, transactionReference: string) {
+    return API.get(ApiRoutes.VerifyPayment(transactionReference), getApiConfig(token));
+  }
+
+  return verifyPayment;
+}
+
 export function useFetchUsers() {
   async function fetchUsers(
     token: string,
@@ -215,7 +223,10 @@ export function useFetchCouponCodes() {
 
 export function useDeleteCouponCode() {
   async function deleteCouponCode(token: string, couponCodeId: string) {
-    return API.delete(`${ApiRoutes.CouponCodes}/${couponCodeId}`, getApiConfig(token));
+    return API.delete(
+      `${ApiRoutes.CouponCodes}/${couponCodeId}`,
+      getApiConfig(token)
+    );
   }
 
   return deleteCouponCode;
