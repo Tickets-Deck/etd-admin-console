@@ -4,7 +4,7 @@ import { TransactionFeeRequest } from "../models/ITransactionFee";
 import { CouponCodeRequest } from "../models/ICoupon";
 import { IEventEmail } from "../models/IEmail";
 import { LoginUserRequest, LoginUserResponse } from "../models/ILoginUser";
-import { EventVisibility } from "@prisma/client";
+import { EventVisibility } from "../enums/IEventVisibility";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL,
