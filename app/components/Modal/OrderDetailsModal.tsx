@@ -65,7 +65,7 @@ const OrderDetailsModal = ({ visibility, setVisibility, ticketOrder }: Props) =>
                                         Phone number:
                                     </p>
                                     <p className="text-sm">
-                                        {ticketOrder.user.phone || ticketOrder.contactNumber || 'N/A'}
+                                        {ticketOrder.user.phone || ticketOrder.contactPhoneNumber	 || 'N/A'}
                                     </p>
                                 </div>
                                 <div className='flex flex-row gap-2 p-1 rounded-md'>
@@ -99,7 +99,7 @@ const OrderDetailsModal = ({ visibility, setVisibility, ticketOrder }: Props) =>
                                         Phone number:
                                     </p>
                                     <p className="text-sm">
-                                        {ticketOrder.contactNumber || 'N/A'}
+                                        {ticketOrder.contactPhoneNumber	 || 'N/A'}
                                     </p>
                                 </div>
                                 {/* <span className='p-1 italic text-sm text-dark-grey/50'>

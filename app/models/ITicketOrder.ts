@@ -37,5 +37,5 @@ export interface SingleTicketOrder {
   contactEmail: string;
   contactFirstName: string | null;
   contactLastName: string | null;
-  contactNumber: string | null;
+  contactPhoneNumber: string | null;
 }
