@@ -17,12 +17,12 @@ export class ApiRoutes {
   /**
    * The live base url for the application
    */
-  static BASE_URL_LIVE: string = "https://console.events.ticketsdeck.com/";
+  static BASE_URL_LIVE: string = "https://api.ticketsdeck.com/";
 
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_LIVE;
 
   /**
    * The route to Request Credential Token endpoint
